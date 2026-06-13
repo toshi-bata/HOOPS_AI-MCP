@@ -296,9 +296,16 @@ def run_MFR_inference(cad_file_path: pathlib.Path) -> dict[str, Any]:
     inference_model = get_MFR_inference_model()
     ml_input = inference_model.preprocess(str(cad_file_path))
     predictions, probabilities = inference_model.predict_and_postprocess(ml_input)
+
+    try:
+        viewer_url = create_CAD_viewer(cad_file_path)
+    except Exception:
+        viewer_url = None
+
     return {
         "predictions": _json_safe(predictions),
         "probabilities": _json_safe(probabilities),
+        "viewer_url": viewer_url,
     }
 
 

@@ -191,7 +191,8 @@ curl.exe -X POST "http://127.0.0.1:8001/MFR/inference" `
 ```json
 {
   "predictions": [...],
-  "probabilities": [...]
+  "probabilities": [...],
+  "viewer_url": "http://127.0.0.1:<viewer_port>/index.html"
 }
 ```
 

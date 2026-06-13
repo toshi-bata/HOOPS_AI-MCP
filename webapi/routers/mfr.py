@@ -42,15 +42,16 @@ def MFR_file_thumbnail(file_id: int):
 
 @router.post("/inference")
 def MFR_inference(file: UploadFile = File(...)):
+    cad_file_path = None
     try:
         cad_file_path = core.save_uploaded_CAD_file(file)
-        try:
-            return core.run_MFR_inference(cad_file_path)
-        finally:
-            cad_file_path.unlink(missing_ok=True)
+        return core.run_MFR_inference(cad_file_path)
     except RuntimeError as exc:
         raise HTTPException(status_code=500, detail=str(exc)) from exc
     except Exception as exc:
         raise HTTPException(status_code=500, detail=f"Inference failed: {exc}") from exc
+    finally:
+        if cad_file_path is not None:
+            cad_file_path.unlink(missing_ok=True)
 
 
