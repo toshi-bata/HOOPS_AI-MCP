@@ -80,8 +80,141 @@ Run the following from the `webapi/` directory using the Python executable from 
 C:\Users\user_name\miniconda3\envs\hoops_ai_cpu\python.exe -m uvicorn main:app --host 127.0.0.1 --port 8001
 ```
 
+For development with auto-reload:
+
+```bash
+C:\Users\user_name\miniconda3\envs\hoops_ai_cpu\python.exe -m uvicorn main:app --host 127.0.0.1 --port 8001 --reload
+```
+
 The API will be available at `http://127.0.0.1:8001`.  
 Interactive docs (Swagger UI) are at `http://127.0.0.1:8001/docs`.
+
+---
+
+### API Usage
+
+#### MFR — Search files by feature
+
+Returns CAD file names that contain a given manufacturing feature.
+
+```
+GET /MFR/files/search?feature_name=<name>
+```
+
+**Example:**
+
+```bash
+curl.exe "http://127.0.0.1:8001/MFR/files/search?feature_name=through%20hole"
+# Windows PowerShell
+curl.exe "http://127.0.0.1:8001/MFR/files/search?feature_name=circular%20blind%20step"
+```
+
+**Response:**
+
+```json
+{
+  "file_names": ["bracket_a.stp", "housing_b.stp"]
+}
+```
+
+---
+
+#### MFR — List label descriptions
+
+Returns all MFR label IDs with their names and descriptions.
+
+```
+GET /MFR/labels/description
+```
+
+**Example:**
+
+```bash
+curl.exe "http://127.0.0.1:8001/MFR/labels/description"
+```
+
+---
+
+#### MFR — Dataset table of contents
+
+Returns a summary of the loaded MFR dataset.
+
+```
+GET /MFR/dataset/table-of-contents
+```
+
+**Example:**
+
+```bash
+curl.exe "http://127.0.0.1:8001/MFR/dataset/table-of-contents"
+```
+
+---
+
+#### CAD Viewer — Browser UI
+
+Open the browser and navigate to:
+
+```
+http://127.0.0.1:8001/CAD/viewer
+```
+
+The page shows two forms:
+
+1. **Upload CAD file** — choose a local file and click *Open viewer*
+2. **CAD file path in shared folder** — enter a filename or path relative to the shared folder and click *Open viewer from path*
+
+Both forms submit to the API and return a JSON response containing `viewer_url`. Copy that URL and open it in your browser to launch the interactive 3D viewer.
+
+> The viewer runs on a **separate port** from the API server. Make sure that port is accessible (not blocked by a firewall).
+
+#### CAD Viewer — Upload via API
+
+```bash
+# Windows PowerShell
+curl.exe -X POST "http://127.0.0.1:8001/CAD/viewer" `
+         -F "file=@C:\path\to\model.stp"
+```
+
+**Response:**
+
+```json
+{
+  "viewer_url": "http://127.0.0.1:<viewer_port>/index.html"
+}
+```
+
+Open the returned `viewer_url` in your browser to view the model.
+
+#### CAD Viewer — Open by shared path
+
+> This endpoint is used internally by the browser UI form and is not listed in the Swagger docs.
+
+```bash
+# Windows PowerShell
+curl.exe -X POST "http://127.0.0.1:8001/CAD/viewer/from-path" `
+         -d "cad_file_path=model.stp"
+```
+
+The path can be a filename relative to the shared folder (`HOOPS_AI_CAD_SHARED_DIR`) or an absolute path within it.
+
+**Response:**
+
+```json
+{
+  "viewer_url": "http://127.0.0.1:<viewer_port>/index.html"
+}
+```
+
+Open the returned `viewer_url` in your browser to view the model.
+
+---
+
+### Running tests
+
+```bash
+python -m unittest discover -s tests
+```
 
 ---
 
