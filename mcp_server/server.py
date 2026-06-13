@@ -81,7 +81,11 @@ def run_MFR_inference(cad_file_path: str) -> dict:
     """
     Run MFR inference on a local CAD file and launch the CAD viewer.
     Uploads the file to the server and returns predictions, probabilities, and viewer_url.
-    Call colorize_MFR_viewer() after the viewer has loaded to apply face colors.
+
+    After calling this function:
+    1. Share the viewer_url with the user and ask them to open it in a browser.
+    2. Wait for the user to confirm that the 3D model has fully loaded in the viewer.
+    3. Only call colorize_MFR_viewer() after receiving confirmation from the user.
     """
     source_path = Path(cad_file_path).expanduser().resolve()
     if not source_path.exists():
@@ -101,7 +105,11 @@ def run_MFR_inference(cad_file_path: str) -> dict:
 def colorize_MFR_viewer() -> dict:
     """
     Apply MFR prediction colors to the last active CAD viewer.
-    Must be called after run_MFR_inference() and after the viewer has fully loaded.
+
+    This function must be called only after the user has confirmed that the 3D model
+    has fully loaded in the browser viewer opened by run_MFR_inference().
+    Do NOT call this automatically — always wait for explicit instruction from the user.
+
     Returns color_map: {label_id: {name, color_rgb}}.
     """
     response = httpx.post(f"{API_BASE}/MFR/viewer/colorize", timeout=120)
