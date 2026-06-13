@@ -120,6 +120,24 @@ curl.exe "http://127.0.0.1:8001/MFR/files/search?feature_name=circular%20blind%2
 
 ---
 
+#### MFR — File thumbnail
+
+Returns the thumbnail PNG image for a given file ID.
+
+```
+GET /MFR/files/{file_id}/thumbnail
+```
+
+**Example:**
+
+```powershell
+Invoke-RestMethod -Uri "http://127.0.0.1:8001/MFR/files/1/thumbnail" -OutFile "thumbnail.png"
+```
+
+**Response:** PNG image (`image/png`)
+
+---
+
 #### MFR — List label descriptions
 
 Returns all MFR label IDs with their names and descriptions.
@@ -257,6 +275,7 @@ The MCP server connects Claude Desktop to the HOOPS AI WebAPI.
 | `get_MFR_table_of_contents` | Get the MFR dataset summary |
 | `get_MFR_labels_description` | List all MFR label IDs, names, and descriptions |
 | `search_MFR_files` | Find CAD files that contain a given manufacturing feature |
+| `get_MFR_file_thumbnail` | Download the thumbnail PNG for a file ID, returns base64-encoded PNG |
 
 ---
 

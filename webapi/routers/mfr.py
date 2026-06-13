@@ -1,5 +1,8 @@
+import io
+
 import core
 from fastapi import APIRouter, HTTPException, Query
+from fastapi.responses import StreamingResponse
 
 router = APIRouter(prefix="/MFR", tags=["MFR"])
 
@@ -26,3 +29,14 @@ def MFR_table_of_contents():
         return core.get_MFR_table_of_contents()
     except RuntimeError as exc:
         raise HTTPException(status_code=500, detail=str(exc)) from exc
+
+
+@router.get("/files/{file_id}/thumbnail")
+def MFR_file_thumbnail(file_id: int):
+    try:
+        png_bytes = core.get_MFR_file_thumbnail(file_id)
+        return StreamingResponse(io.BytesIO(png_bytes), media_type="image/png")
+    except RuntimeError as exc:
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
+
+

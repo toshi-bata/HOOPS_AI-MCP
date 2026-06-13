@@ -64,5 +64,17 @@ def search_MFR_files(
     return response.json()
 
 
+@mcp.tool()
+def get_MFR_file_thumbnail(file_id: int) -> str:
+    """
+    Download the thumbnail PNG image for a given file ID and return it as a base64-encoded string.
+    """
+    import base64
+
+    response = httpx.get(f"{API_BASE}/MFR/files/{file_id}/thumbnail", timeout=60)
+    response.raise_for_status()
+    return base64.b64encode(response.content).decode("utf-8")
+
+
 if __name__ == "__main__":
     mcp.run(transport="stdio")

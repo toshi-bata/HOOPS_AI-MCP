@@ -255,6 +255,27 @@ def search_MFR_files(feature_name: str) -> dict[str, Any]:
     }
 
 
+def get_MFR_file_thumbnail(file_id: int) -> bytes:
+    if MFR_dataset_explorer is None:
+        raise RuntimeError("DatasetExplorer is not initialized.")
+
+    from hoops_ai.insights import DatasetViewer
+
+    dataset_viewer = DatasetViewer.from_explorer(MFR_dataset_explorer)
+    fig = dataset_viewer.show_preview_as_image(
+        [file_id],
+        k=1,
+        grid_cols=1,
+        label_format="id",
+        figsize=(3, 3),
+    )
+
+    buf = io.BytesIO()
+    fig.savefig(buf, format="png", bbox_inches="tight")
+    buf.seek(0)
+    return buf.read()
+
+
 def get_MFR_table_of_contents() -> dict[str, Any]:
     if MFR_dataset_explorer is None:
         raise RuntimeError("DatasetExplorer is not initialized.")
