@@ -9,7 +9,8 @@ mcp = FastMCP("HOOPS AIサーバー")
 @mcp.tool()
 def open_cad_viewer(cad_file_path: str) -> str:
     """
-    Open a CAD file in CADViewer and return the generated viewer URL.
+    Open a local CAD file in CADViewer and return the generated viewer URL.
+    The file is uploaded from the client machine to the server.
     """
     source_path = Path(cad_file_path).expanduser().resolve()
     if not source_path.exists():
@@ -17,11 +18,12 @@ def open_cad_viewer(cad_file_path: str) -> str:
     if not source_path.is_file():
         raise ValueError(f"Path is not a file: {source_path}")
 
-    response = httpx.post(
-        f"{API_BASE}/CAD/viewer/from-path",
-        data={"cad_file_path": str(source_path)},
-        timeout=120,
-    )
+    with source_path.open("rb") as f:
+        response = httpx.post(
+            f"{API_BASE}/CAD/viewer",
+            files={"file": (source_path.name, f, "application/octet-stream")},
+            timeout=120,
+        )
     response.raise_for_status()
 
     data = response.json()
