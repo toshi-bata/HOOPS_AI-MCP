@@ -123,5 +123,26 @@ def terminate_CAD_viewer(terminate_all: bool = False) -> dict:
     return response.json()
 
 
+@mcp.tool()
+def get_brep_adjacency_graph(cad_file_path: str) -> dict:
+    """
+    Build a face adjacency graph from the B-rep model of a local CAD file.
+    Nodes are faces; edges connect adjacent faces.
+    Returns graph data (nodes, edges, counts) and a base64-encoded PNG visualization.
+    """
+    source_path = Path(cad_file_path).expanduser().resolve()
+    if not source_path.exists():
+        raise FileNotFoundError(f"CAD file not found: {source_path}")
+
+    with source_path.open("rb") as f:
+        response = httpx.post(
+            f"{API_BASE}/BRep/adjacency-graph",
+            files={"file": (source_path.name, f, "application/octet-stream")},
+            timeout=120,
+        )
+    response.raise_for_status()
+    return response.json()
+
+
 if __name__ == "__main__":
     mcp.run(transport="stdio")

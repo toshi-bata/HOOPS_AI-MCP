@@ -444,3 +444,47 @@ def terminate_CAD_viewer(terminate_all: bool = False) -> dict[str, Any]:
         viewer = CAD_viewers.pop()
         viewer.terminate()
         return {"terminated": 1}
+
+
+def build_brep_adjacency_graph(cad_file_path: pathlib.Path) -> dict[str, Any]:
+    import base64
+
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    import networkx as nx
+    from hoops_ai.cadaccess import HOOPSLoader, HOOPSTools
+    from hoops_ai.cadencoder import BrepEncoder
+
+    cad_loader = HOOPSLoader()
+    cad_model = cad_loader.create_from_file(str(cad_file_path))
+
+    hoopstools = HOOPSTools()
+    hoopstools.adapt_brep(cad_model)
+
+    brep_encoder = BrepEncoder(cad_model.get_brep())
+    adj_graph = brep_encoder.push_face_adjacency_graph()
+
+    # Graph data as JSON
+    graph_data = {
+        "nodes": list(adj_graph.nodes()),
+        "edges": [list(e) for e in adj_graph.edges()],
+        "num_nodes": adj_graph.number_of_nodes(),
+        "num_edges": adj_graph.number_of_edges(),
+    }
+
+    # Graph image as base64 PNG
+    fig, ax = plt.subplots(figsize=(8, 8))
+    pos = nx.kamada_kawai_layout(adj_graph)
+    nx.draw_networkx(adj_graph, pos, arrows=False, ax=ax)
+    ax.axis("off")
+    buf = io.BytesIO()
+    fig.savefig(buf, format="png", bbox_inches="tight")
+    plt.close(fig)
+    buf.seek(0)
+    graph_image_b64 = base64.b64encode(buf.read()).decode("utf-8")
+
+    return {
+        "graph": graph_data,
+        "graph_image": graph_image_b64,
+    }

@@ -313,6 +313,39 @@ Invoke-RestMethod -Method Delete -Uri "http://127.0.0.1:8001/CAD/viewer?all=true
 
 ---
 
+### B-Rep
+
+#### B-Rep — Face adjacency graph
+
+Build a face adjacency graph from the B-rep model of a CAD file. Returns graph data (nodes, edges) and a base64-encoded PNG visualization.
+
+```
+POST /BRep/adjacency-graph
+```
+
+**Example:**
+
+```powershell
+curl.exe -X POST "http://127.0.0.1:8001/BRep/adjacency-graph" `
+    -F "file=@C:\path\to\model.SLDPRT"
+```
+
+**Response:**
+
+```json
+{
+  "graph": {
+    "nodes": [0, 1, 2, ...],
+    "edges": [[0, 1], [1, 2], ...],
+    "num_nodes": 144,
+    "num_edges": 210
+  },
+  "graph_image": "<base64-encoded PNG>"
+}
+```
+
+---
+
 ### Running tests
 
 ```bash
@@ -363,6 +396,7 @@ The MCP server connects Claude Desktop to the HOOPS AI WebAPI.
 | `run_MFR_inference` | Run MFR inference on a local CAD file, launches viewer, returns predictions + viewer_url |
 | `colorize_MFR_viewer` | Apply MFR prediction colors to the last active viewer, returns color_map |
 | `terminate_CAD_viewer` | Terminate the last (or all) active CAD viewer(s) |
+| `get_brep_adjacency_graph` | Build B-rep face adjacency graph, returns graph data and base64 PNG |
 
 ---
 
