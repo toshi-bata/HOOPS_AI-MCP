@@ -4,7 +4,7 @@
 
 ## Slide 1 — Title
 
-Today I'd like to introduce HOOPS AI MCP — a platform for intelligent CAD data analysis. It delivers four core capabilities: CAD Viewer, B-Rep Analysis, Manufacturing Feature Recognition, and Shape Similarity Search. These are accessible through two interfaces: a REST API built with FastAPI, and an MCP Server that lets Claude Desktop control everything using natural language.
+In this video, I'd like to introduce "HOOPS AI MCP" — a practical solution for putting HOOPS AI to work. It is a platform for intelligent CAD data analysis, delivering four core capabilities: CAD Viewer, B-Rep Analysis, Manufacturing Feature Recognition, and Shape Similarity Search. These are accessible through two interfaces: a REST API built with FastAPI, and an MCP Server that lets Claude Desktop control everything using natural language.
 
 ---
 
