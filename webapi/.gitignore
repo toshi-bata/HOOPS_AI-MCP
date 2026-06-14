@@ -3,5 +3,3 @@ __pycache__/
 *.py[cod]
 uploads/
 out/
-.hoops_embeddings_temp/
-training_errors.log

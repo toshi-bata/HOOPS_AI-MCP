@@ -6,7 +6,7 @@ from contextlib import asynccontextmanager
 
 import core
 from fastapi import FastAPI
-from routers import brep, cad, embeddings, mfr
+from routers import brep, cad, mfr
 
 
 @asynccontextmanager
@@ -25,6 +25,5 @@ app = FastAPI(
 app.include_router(mfr.router)
 app.include_router(cad.router)
 app.include_router(brep.router)
-app.include_router(embeddings.router)
 
 
