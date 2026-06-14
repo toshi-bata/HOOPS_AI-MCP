@@ -174,5 +174,27 @@ def get_brep_attributes(cad_file_path: str) -> dict:
     return response.json()
 
 
+@mcp.tool()
+def search_similar_shapes(cad_file_path: str, top_k: int = 10) -> dict:
+    """
+    Search for similar CAD shapes using HOOPS Embeddings and a FAISS index.
+    Uploads a local CAD file and returns the top-k most similar shapes from the indexed database.
+    Each hit contains an id (file identifier in the database) and a similarity score.
+    """
+    source_path = Path(cad_file_path).expanduser().resolve()
+    if not source_path.exists():
+        raise FileNotFoundError(f"CAD file not found: {source_path}")
+
+    with source_path.open("rb") as f:
+        response = httpx.post(
+            f"{API_BASE}/similarity/search",
+            files={"file": (source_path.name, f, "application/octet-stream")},
+            params={"top_k": top_k},
+            timeout=300,
+        )
+    response.raise_for_status()
+    return response.json()
+
+
 if __name__ == "__main__":
     mcp.run(transport="stdio")

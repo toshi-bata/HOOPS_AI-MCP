@@ -53,6 +53,8 @@ MFR_dataset_explorer = None
 MFR_inference_model = None
 MFR_last_predictions: list[Any] = []
 CAD_viewers: list[Any] = []
+cad_searcher = None
+shape_index = None
 
 
 def get_MFR_dataset_explorer():
@@ -67,6 +69,20 @@ def get_MFR_inference_model():
     if MFR_inference_model is None:
         MFR_inference_model = create_MFR_inference_model()
     return MFR_inference_model
+
+
+def get_cad_searcher():
+    global cad_searcher
+    if cad_searcher is None:
+        cad_searcher = create_cad_searcher()
+    return cad_searcher
+
+
+def get_shape_index():
+    global shape_index
+    if shape_index is None:
+        shape_index = load_shape_index()
+    return shape_index
 
 
 def _json_safe(value: Any) -> Any:
@@ -271,6 +287,45 @@ def create_MFR_inference_model():
     )
     inference_model.load_from_checkpoint(trained_model)
     return inference_model
+
+
+def create_cad_searcher():
+    from hoops_ai.ml import CADSearch
+    from hoops_ai.ml.embeddings import HOOPSEmbeddings
+
+    load_env_file()
+
+    notebooks_dir = pathlib.Path(get_required_env("HOOPS_AI_NOTEBOOK_DIR"))
+    ckpt_name = get_required_env("HOOPS_AI_EMBEDDINGS_MODEL_NAME")
+    trained_model = notebooks_dir.parent.joinpath("packages", "trained_ml_models", ckpt_name)
+
+    HOOPSEmbeddings.register_model(
+        model_name="hoops_embeddings_model",
+        checkpoint_path=str(trained_model),
+    )
+    embedder = HOOPSEmbeddings(model="hoops_embeddings_model")
+    return CADSearch(shape_model=embedder)
+
+
+def load_shape_index():
+    load_env_file()
+
+    notebooks_dir = pathlib.Path(get_required_env("HOOPS_AI_NOTEBOOK_DIR"))
+    faiss_file_name = get_required_env("HOOPS_AI_FAISS_INDEX_PATH")
+    faiss_index_path = notebooks_dir.joinpath(faiss_file_name)
+    searcher = get_cad_searcher()
+    return searcher.load_shape_index(path=str(faiss_index_path))
+
+
+def search_by_shape(cad_file_path: pathlib.Path, top_k: int = 10) -> dict[str, Any]:
+    get_shape_index()  # ensure FAISS index is loaded into the searcher
+    searcher = get_cad_searcher()
+    hits = searcher.search_by_shape(str(cad_file_path), top_k=top_k)
+    results = [
+        {"id": _json_safe(hit.id), "score": _json_safe(hit.score)}
+        for hit in hits[0]
+    ]
+    return {"hits": results, "count": len(results)}
 
 
 def search_MFR_files(feature_name: str) -> dict[str, Any]:
