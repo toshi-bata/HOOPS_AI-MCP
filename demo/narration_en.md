@@ -16,9 +16,9 @@ In this video, I'd like to introduce "HOOPS AI MCP" — a practical solution for
 
 ---
 
-## Slide 4 — Architecture
+## Slide 3 — Architecture
 
-The system is organized in four layers. At the foundation is HOOPS AI by Tech Soft 3D, which handles 3D CAD file loading, geometry analysis, and ML inference. On top of that sits the FastAPI WebAPI, which exposes those capabilities as REST endpoints. The MCP Server wraps the WebAPI and acts as a bridge, allowing Claude Desktop to invoke tools using natural language. Finally, Claude Desktop operates as the AI agent — autonomously calling MCP tools to carry out end-to-end 3D CAD analysis tasks.
+The system is organized in four layers. At the foundation is HOOPS AI by Tech Soft 3D, which handles 3D CAD file loading, geometry analysis, and ML inference. On top of that sits the FastAPI WebAPI, which exposes those capabilities as REST endpoints. FastAPI is a high-performance Python web framework that lets us build the Web API while leveraging HOOPS AI's Python API directly — no additional bridge layer required. The MCP Server wraps the WebAPI and acts as a bridge, allowing Claude Desktop to invoke tools using natural language. Finally, Claude Desktop operates as the AI agent — autonomously calling MCP tools to carry out end-to-end 3D CAD analysis tasks.
 
 ---
 
