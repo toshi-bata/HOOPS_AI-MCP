@@ -35,3 +35,29 @@ MCP Tools are the toolset available to Claude Desktop. We provide 11 tools mappe
 ## Slide 6 — Summary
 
 To summarize: HOOPS AI MCP delivers CAD intelligence through two complementary approaches — a REST API and AI agent integration. B-Rep analysis and manufacturing feature recognition provide deep understanding of CAD data, while the combination of HOOPS Embeddings and FAISS has demonstrated similarity search accuracy of 0.99 and above. We invite you to explore the new possibilities this platform brings to CAD data utilization.
+
+---
+
+## Live Demo Script
+
+Let's now take a look at the actual demo.
+
+HOOPS AI is pre-installed on the server. This is the server that exposes HOOPS AI capabilities as a REST API. When the server starts, a license key is passed to HOOPS AI and it becomes activated.
+
+This is the MCP server code. This MCP server has been registered in the Claude Desktop configuration.
+
+Let's go ahead and access HOOPS AI from Claude Desktop.
+
+Let's ask: "Hello HOOPS AI, what can you do?" Claude accesses HOOPS AI via MCP and summarizes the information it retrieves.
+
+It looks like CAD viewing is available, so let's have it display a CAD file. The file is uploaded to the server and the viewer is launched. When the viewer starts, a URL is returned — opening that link displays the 3D model in the browser.
+
+B-Rep analysis is also available, so let's have it look into another model. A separate viewer instance is launched. Claude takes the B-Rep data returned by HOOPS AI and presents it in a clear, organized way.
+
+Next, let's have it run manufacturing feature recognition, then launch the viewer and colorize the model by feature type. Claude also generates a color legend to make the results easy to understand.
+
+Let's ask for an overview of the manufacturing feature recognition dataset. HOOPS AI returns the data in a complex JSON format, but Claude summarizes it clearly.
+
+Finally, let's run a shape similarity search. Claude explains the results returned by HOOPS AI in an easy-to-understand way.
+
+HOOPS AI — previously operated by AI engineers and data scientists using Python in Jupyter Notebooks — can now be used by anyone, without writing any code, simply by wrapping it in a Web API and exposing it through MCP to AI tools like Claude Desktop. Furthermore, the complex data returned by HOOPS AI is organized and communicated clearly by Claude's AI model, leading to significant improvements in workflow efficiency.
