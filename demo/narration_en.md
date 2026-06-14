@@ -2,39 +2,45 @@
 
 ---
 
-## Slide 1 — Title
+## Slide 1 — HOOPS AI
 
 HOOPS AI is a 3D CAD-native machine learning framework developed by Tech Soft 3D. It provides everything needed for 3D CAD and AI workflows in a single toolkit — from loading 30+ 3D CAD formats and building datasets, to training models and running inference.
+
+It offers four key capabilities: native loading of 30+ formats in a Python environment via HOOPS Exchange; building encoded datasets from 3D CAD data via scripts; pre-trained models for manufacturing feature recognition and similar shape search, plus custom model support via Python API; and real-time visualization of inference results in the 3D viewer through HOOPS Visualize for Web integration.
+
+---
+
+## Slide 2 — Title
 
 In this video, I'd like to introduce "HOOPS AI MCP" — a practical solution for putting HOOPS AI to work. It is a platform for intelligent 3D CAD data analysis, delivering four core capabilities: 3D CAD Viewer, B-Rep Analysis, Manufacturing Feature Recognition, and Shape Similarity Search. These are accessible through two interfaces: a REST API built with FastAPI, and an MCP Server that lets Claude Desktop control everything using natural language.
 
 ---
 
-## Slide 2 — Architecture
+## Slide 4 — Architecture
 
 The system is organized in four layers. At the foundation is HOOPS AI by Tech Soft 3D, which handles 3D CAD file loading, geometry analysis, and ML inference. On top of that sits the FastAPI WebAPI, which exposes those capabilities as REST endpoints. The MCP Server wraps the WebAPI and acts as a bridge, allowing Claude Desktop to invoke tools using natural language. Finally, Claude Desktop operates as the AI agent — autonomously calling MCP tools to carry out end-to-end 3D CAD analysis tasks.
 
 ---
 
-## Slide 3 — Features
+## Slide 4 — Features
 
 Let me walk through the four features. First, the 3D CAD Viewer renders 30+ formats — including STEP, SolidWorks, CATIA, and NX — interactively in the browser. B-Rep Analysis generates face adjacency graphs and extracts face and edge attributes such as type, area, length, and dihedral angle. MFR uses a trained ML model to automatically recognize 24 machining feature types like holes, slots, and pockets, with results visualized as color overlays in the viewer. Finally, 3D CAD Similarity Search converts shapes into feature vectors with HOOPS Embeddings and retrieves similar parts at high speed using a FAISS index.
 
 ---
 
-## Slide 4 — WebAPI Endpoints
+## Slide 5 — WebAPI Endpoints
 
 The WebAPI organizes endpoints by feature. It offers 11 endpoints in total: 3D CAD Viewer launch and termination; B-Rep face adjacency graph generation and attribute extraction; MFR file search, thumbnail retrieval, label listing, inference execution, and viewer colorization; and shape similarity search. All endpoints are immediately testable through the built-in Swagger UI.
 
 ---
 
-## Slide 5 — MCP Tools
+## Slide 6 — MCP Tools
 
 MCP Tools are the toolset available to Claude Desktop. We provide 11 tools mapped to each WebAPI feature. Claude can launch the viewer, recognize machining features, or search for similar shapes — all from natural language instructions alone. The key advantage is that engineers can conduct interactive 3D CAD analysis without writing any code.
 
 ---
 
-## Slide 6 — Summary
+## Slide 7 — Summary
 
 To summarize: HOOPS AI MCP delivers 3D CAD intelligence through two complementary approaches — a REST API and AI agent integration. B-Rep analysis and manufacturing feature recognition provide deep understanding of 3D CAD data, while the combination of HOOPS Embeddings and FAISS has demonstrated similarity search accuracy of 0.99 and above. We invite you to explore the new possibilities this platform brings to 3D CAD data utilization.
 
