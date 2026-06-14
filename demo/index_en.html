@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -97,6 +97,8 @@
 <body>
 
 <nav>
+  <img src="images/ts3d-brand.svg" alt="Tech Soft 3D" style="height:18px; filter:brightness(0) invert(1); opacity:.7; margin-right:4px; vertical-align:middle;">
+  <a href="#hoops-ai">HOOPS AI</a><span class="sep">|</span>
   <a href="#title">Top</a><span class="sep">|</span>
   <a href="#arch">Architecture</a><span class="sep">|</span>
   <a href="#features">Features</a><span class="sep">|</span>
@@ -105,22 +107,60 @@
   <a href="#summary">Summary</a>
 </nav>
 
-<!-- 1. Title -->
-<section class="slide center" id="title">
+<!-- 1. HOOPS AI -->
+<section class="slide" id="hoops-ai" style="background-image: url('images/adobestock_1556003374.jpg'); background-size: cover; background-position: center; background-blend-mode: overlay; background-color: rgba(13,17,23,.88);">
+  <div style="display:flex; align-items:center; gap:16px; margin-bottom:1em;">
+    <img src="images/ts3d-brand.svg" alt="Tech Soft 3D" style="height:36px; filter:brightness(0) invert(1);">
+    <h2 style="border:none; padding:0; margin:0;">HOOPS AI</h2>
+  </div>
+  <div style="display:flex; gap:32px; align-items:flex-start;">
+    <div style="flex:1;">
+      <p style="font-size:1em; color:var(--text); margin-bottom:1.2em;">
+        A <strong>3D CAD-native machine learning framework</strong> by Tech Soft 3D. It provides everything needed for 3D CAD and AI workflows in a single toolkit — from loading 30+ 3D CAD formats and building datasets, to training models and running inference.
+      </p>
+      <div class="cards">
+        <div class="card">
+          <h3>📂 3D CAD Data Loading</h3>
+          <p>Built on HOOPS Exchange — natively supports 30+ formats including STEP, SolidWorks, CATIA, and NX. No additional parsers required.</p>
+        </div>
+        <div class="card">
+          <h3>🗄️ Dataset Building</h3>
+          <p>Extract geometry and attribute data from 3D CAD files and automatically generate ML training datasets via scripts.</p>
+        </div>
+        <div class="card">
+          <h3>🧠 Model Training & Inference</h3>
+          <p>Pre-trained models for manufacturing feature recognition and shape similarity search. Custom model training and inference via Python API.</p>
+        </div>
+        <div class="card">
+          <h3>🖼️ Visualization</h3>
+          <p>Integrated with HOOPS Visualize for Web — inference results are displayed as real-time color overlays in the 3D viewer.</p>
+        </div>
+      </div>
+    </div>
+    <div style="flex:0 0 340px;">
+      <img src="images/demo-hv-mockup.webp" alt="HOOPS Visualize" style="width:100%; border-radius:8px; border:1px solid var(--border); box-shadow:0 4px 24px rgba(0,0,0,.6);">
+    </div>
+  </div>
+  <div class="slide-num">1 / 7</div>
+</section>
+
+<!-- 2. Title -->
+<section class="slide center" id="title" style="background-image: url('images/adobestock_1556003374.jpg'); background-size: cover; background-position: center; background-blend-mode: overlay; background-color: rgba(13,17,23,.92);">
+  <img src="images/ts3d-brand.svg" alt="Tech Soft 3D" style="height:44px; filter:brightness(0) invert(1); opacity:.85; margin-bottom:1.4em;">
   <h1>HOOPS AI MCP</h1>
-  <p style="font-size:1.2em; color:var(--accent2); margin:.4em 0;">CAD Intelligence Platform</p>
+  <p style="font-size:1.2em; color:var(--accent2); margin:.4em 0;">3D CAD Intelligence Platform</p>
   <p class="subtitle" style="margin-top:.8em; max-width:600px;">
-    CAD Viewer &nbsp;·&nbsp; B-Rep Analysis &nbsp;·&nbsp;
+    3D CAD Viewer &nbsp;·&nbsp; B-Rep Analysis &nbsp;·&nbsp;
     Manufacturing Feature Recognition &nbsp;·&nbsp; Similarity Search
   </p>
   <p class="subtitle" style="margin-top:1em;">
     WebAPI (FastAPI) &nbsp;+&nbsp; MCP Server (Claude Desktop)
   </p>
-  <div class="slide-num">1 / 6</div>
+  <div class="slide-num">2 / 7</div>
 </section>
 
-<!-- 2. Architecture -->
-<section class="slide" id="arch">
+<!-- 3. Architecture -->
+<section class="slide" id="arch" style="background-image: url('images/adobestock_1556003374.jpg'); background-size: cover; background-position: center; background-blend-mode: overlay; background-color: rgba(13,17,23,.92);">
   <h2>Architecture</h2>
   <div class="arch">
     <div class="arch-box gray">
@@ -137,7 +177,7 @@
       <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="var(--accent2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:6px;">
         <path d="M12 22V12M12 12C12 12 7 10 7 6V2M12 12C12 12 17 10 17 6V2M9 2h6M5 12h14"/>
       </svg>
-      <strong>MCP Server</strong><small>mcp_server/server.py</small>
+      <strong>MCP Server</strong><small>server.py</small>
     </div>
     <div class="arch-arrow">⟷</div>
     <div class="arch-box">
@@ -145,7 +185,7 @@
       <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:6px;">
         <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
       </svg>
-      <strong>WebAPI</strong><small>FastAPI :8001</small>
+      <strong>WebAPI</strong><small>FastAPI</small>
     </div>
     <div class="arch-arrow">⟷</div>
     <div class="arch-box gray">
@@ -156,25 +196,25 @@
         <line x1="12" y1="13" x2="21" y2="8"/>
         <line x1="12" y1="13" x2="12" y2="21"/>
       </svg>
-      <strong>HOOPS AI</strong><small>ML / CAD Engine</small>
+      <strong>HOOPS AI</strong><small>ML / 3D CAD Engine</small>
     </div>
   </div>
   <ul class="check">
-    <li><strong>HOOPS AI</strong> — CAD loading, geometry analysis, and ML inference engine by Tech Soft 3D</li>
+    <li><strong>HOOPS AI</strong> — 3D CAD loading, geometry analysis, and ML inference engine by Tech Soft 3D</li>
     <li><strong>WebAPI</strong> — Exposes HOOPS AI capabilities as a REST API via FastAPI</li>
     <li><strong>MCP Server</strong> — Tool suite enabling Claude Desktop to control the WebAPI with natural language</li>
-    <li><strong>Claude Desktop</strong> — AI agent that autonomously invokes MCP tools to perform CAD analysis tasks</li>
+    <li><strong>Claude Desktop</strong> — AI agent that autonomously invokes MCP tools to perform 3D CAD analysis tasks</li>
   </ul>
-  <div class="slide-num">2 / 6</div>
+  <div class="slide-num">3 / 7</div>
 </section>
 
-<!-- 3. Features -->
-<section class="slide" id="features">
+<!-- 4. Features -->
+<section class="slide" id="features" style="background-image: url('images/adobestock_1556003374.jpg'); background-size: cover; background-position: center; background-blend-mode: overlay; background-color: rgba(13,17,23,.92);">
   <h2>Features</h2>
   <div class="cards">
     <div class="card">
-      <h3>🖥️ CAD Viewer</h3>
-      <p>Interactive 3D visualization in the browser for 30+ CAD formats including STEP, SolidWorks, CATIA, and NX. Launch via file upload or shared path.</p>
+      <h3>🖥️ 3D CAD Viewer</h3>
+      <p>Interactive 3D visualization in the browser for 30+ 3D CAD formats including STEP, SolidWorks, CATIA, and NX. Launch via file upload or shared path.</p>
     </div>
     <div class="card">
       <h3>🔗 B-Rep Analysis</h3>
@@ -182,25 +222,25 @@
     </div>
     <div class="card">
       <h3>🔍 MFR — Manufacturing Feature Recognition</h3>
-      <p>Recognize machining features (holes, slots, pockets, and 24 other types) in CAD files using a trained ML inference model. Results visualized with color-coding in the viewer.</p>
+      <p>Recognize machining features (holes, slots, pockets, and 24 other types) in 3D CAD files using a trained ML inference model. Results visualized with color-coding in the viewer.</p>
     </div>
     <div class="card">
-      <h3>🎯 CAD Similarity Search</h3>
-      <p>Convert CAD shapes into feature vectors using HOOPS Embeddings, then perform fast similarity search with a FAISS index. Returns top-K results with similarity scores.</p>
+      <h3>🎯 3D CAD Similarity Search</h3>
+      <p>Convert 3D CAD shapes into feature vectors using HOOPS Embeddings, then perform fast similarity search with a FAISS index. Returns top-K results with similarity scores.</p>
     </div>
   </div>
-  <div class="slide-num">3 / 6</div>
+  <div class="slide-num">4 / 7</div>
 </section>
 
-<!-- 4. WebAPI Endpoints -->
-<section class="slide" id="api-all">
+<!-- 5. WebAPI Endpoints -->
+<section class="slide" id="api-all" style="background-image: url('images/adobestock_1556003374.jpg'); background-size: cover; background-position: center; background-blend-mode: overlay; background-color: rgba(13,17,23,.92);">
   <h2>WebAPI Endpoints</h2>
 
-  <h3>🖥️ CAD Viewer</h3>
+  <h3>🖥️ 3D CAD Viewer</h3>
   <table>
     <tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
-    <tr><td><span class="badge post">POST</span></td><td><code>/CAD/viewer</code></td><td>Launch CAD viewer (file upload)</td></tr>
-    <tr><td><span class="badge delete">DELETE</span></td><td><code>/CAD/viewer</code></td><td>Terminate CAD viewer</td></tr>
+    <tr><td><span class="badge post">POST</span></td><td><code>/CAD/viewer</code></td><td>Launch 3D CAD viewer (file upload)</td></tr>
+    <tr><td><span class="badge delete">DELETE</span></td><td><code>/CAD/viewer</code></td><td>Terminate 3D CAD viewer</td></tr>
   </table>
 
   <h3 style="margin-top:1em;">🔗 B-Rep Analysis</h3>
@@ -221,24 +261,24 @@
     <tr><td><span class="badge post">POST</span></td><td><code>/MFR/viewer/colorize</code></td><td>Colorize viewer with inference results</td></tr>
   </table>
 
-  <h3 style="margin-top:1em;">🎯 CAD Similarity Search</h3>
+  <h3 style="margin-top:1em;">🎯 3D CAD Similarity Search</h3>
   <table>
     <tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
     <tr><td><span class="badge post">POST</span></td><td><code>/similarity/search</code></td><td>Shape similarity search</td></tr>
   </table>
 
-  <div class="slide-num">4 / 6</div>
+  <div class="slide-num">5 / 7</div>
 </section>
 
-<!-- 5. MCP Tools -->
-<section class="slide" id="mcp">
+<!-- 6. MCP Tools -->
+<section class="slide" id="mcp" style="background-image: url('images/adobestock_1556003374.jpg'); background-size: cover; background-position: center; background-blend-mode: overlay; background-color: rgba(13,17,23,.92);">
   <h2>MCP Tools (Claude Desktop)</h2>
 
-  <h3>🖥️ CAD Viewer</h3>
+  <h3>🖥️ 3D CAD Viewer</h3>
   <table>
     <tr><th>Tool</th><th>Description</th></tr>
-    <tr><td><code>open_cad_viewer</code></td><td>Open a CAD file in the 3D viewer</td></tr>
-    <tr><td><code>terminate_CAD_viewer</code></td><td>Close the CAD viewer</td></tr>
+    <tr><td><code>open_CAD_viewer</code></td><td>Open a 3D CAD file in the 3D viewer</td></tr>
+    <tr><td><code>terminate_CAD_viewer</code></td><td>Close the 3D CAD viewer</td></tr>
   </table>
 
   <h3 style="margin-top:1em;">🔗 B-Rep Analysis</h3>
@@ -253,43 +293,43 @@
     <tr><th>Tool</th><th>Description</th></tr>
     <tr><td><code>get_MFR_table_of_contents</code></td><td>Get MFR dataset overview</td></tr>
     <tr><td><code>get_MFR_labels_description</code></td><td>List MFR label IDs, names, and descriptions</td></tr>
-    <tr><td><code>search_MFR_files</code></td><td>Search CAD files by machining feature name</td></tr>
+    <tr><td><code>search_MFR_files</code></td><td>Search 3D CAD files by machining feature name</td></tr>
     <tr><td><code>get_MFR_file_thumbnail</code></td><td>Get thumbnail PNG for a file ID</td></tr>
     <tr><td><code>run_MFR_inference</code></td><td>Run MFR inference and launch viewer</td></tr>
     <tr><td><code>colorize_MFR_viewer</code></td><td>Colorize viewer with inference results</td></tr>
   </table>
 
-  <h3 style="margin-top:1em;">🎯 CAD Similarity Search</h3>
+  <h3 style="margin-top:1em;">🎯 3D CAD Similarity Search</h3>
   <table>
     <tr><th>Tool</th><th>Description</th></tr>
     <tr><td><code>search_similar_shapes</code></td><td>Shape similarity search</td></tr>
   </table>
 
-  <div class="slide-num">5 / 6</div>
+  <div class="slide-num">6 / 7</div>
 </section>
 
-<!-- 6. Summary -->
-<section class="slide center" id="summary">
+<!-- 7. Summary -->
+<section class="slide center" id="summary" style="background-image: url('images/adobestock_1556003374.jpg'); background-size: cover; background-position: center; background-blend-mode: overlay; background-color: rgba(13,17,23,.92);">
   <h2>Summary</h2>
   <div class="cards" style="max-width:900px;">
     <div class="card">
       <h3>🌐 REST API</h3>
-      <p>CAD intelligence API powered by FastAPI. Instantly testable via Swagger UI.</p>
+      <p>3D CAD intelligence API powered by FastAPI. Instantly testable via Swagger UI.</p>
     </div>
     <div class="card green">
       <h3>🤖 Claude Integration</h3>
-      <p>Claude Desktop performs CAD analysis in natural language via MCP.</p>
+      <p>Claude Desktop performs 3D CAD analysis in natural language via MCP.</p>
     </div>
     <div class="card">
       <h3>📐 B-Rep / MFR</h3>
-      <p>Deep CAD data analysis: machining feature recognition, face adjacency graphs, and attribute extraction.</p>
+      <p>Deep 3D CAD data analysis: machining feature recognition, face adjacency graphs, and attribute extraction.</p>
     </div>
     <div class="card green">
       <h3>🎯 Similarity Search</h3>
       <p>High-accuracy shape similarity search with HOOPS Embeddings + FAISS. Demonstrated scores of 0.99+.</p>
     </div>
   </div>
-  <div class="slide-num">6 / 6</div>
+  <div class="slide-num">7 / 7</div>
 </section>
 
 </body>

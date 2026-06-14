@@ -97,6 +97,8 @@
 <body>
 
 <nav>
+  <img src="images/ts3d-brand.svg" alt="Tech Soft 3D" style="height:18px; filter:brightness(0) invert(1); opacity:.7; margin-right:4px; vertical-align:middle;">
+  <a href="#hoops-ai">HOOPS AI</a><span class="sep">|</span>
   <a href="#title">Top</a><span class="sep">|</span>
   <a href="#arch">Architecture</a><span class="sep">|</span>
   <a href="#features">Features</a><span class="sep">|</span>
@@ -105,22 +107,60 @@
   <a href="#summary">Summary</a>
 </nav>
 
-<!-- 1. Title -->
-<section class="slide center" id="title">
+<!-- 1. HOOPS AI -->
+<section class="slide" id="hoops-ai" style="background-image: url('images/adobestock_1556003374.jpg'); background-size: cover; background-position: center; background-blend-mode: overlay; background-color: rgba(13,17,23,.88);">
+  <div style="display:flex; align-items:center; gap:16px; margin-bottom:1em;">
+    <img src="images/ts3d-brand.svg" alt="Tech Soft 3D" style="height:36px; filter:brightness(0) invert(1);">
+    <h2 style="border:none; padding:0; margin:0;">HOOPS AI</h2>
+  </div>
+  <div style="display:flex; gap:32px; align-items:flex-start;">
+    <div style="flex:1;">
+      <p style="font-size:1em; color:var(--text); margin-bottom:1.2em;">
+        Tech Soft 3D が提供する <strong>3D CAD 専用の機械学習フレームワーク</strong>。30 以上の 3D CAD フォーマットの読み込みから、データセット構築、モデル学習・推論まで、3D CAD と AI に必要なすべてをひとつのツールキットで提供します。
+      </p>
+      <div class="cards">
+        <div class="card">
+          <h3>📂 3D CAD データ読み込み</h3>
+          <p>HOOPS Exchange ベースで STEP・SolidWorks・CATIA・NX など 30 以上のフォーマットをネイティブサポート。追加パーサー不要。</p>
+        </div>
+        <div class="card">
+          <h3>🗄️ データセット構築</h3>
+          <p>3D CAD ファイルから形状・属性データを抽出し、ML 学習用データセットをスクリプトで自動生成。</p>
+        </div>
+        <div class="card">
+          <h3>🧠 モデル学習・推論</h3>
+          <p>加工フィーチャー認識・形状類似検索などの学習済みモデルを提供。Python API でカスタムモデルの学習・推論も可能。</p>
+        </div>
+        <div class="card">
+          <h3>🖼️ 可視化</h3>
+          <p>HOOPS Visualize for Web 統合により、推論結果を 3D ビューアー上にリアルタイムで色付け表示。</p>
+        </div>
+      </div>
+    </div>
+    <div style="flex:0 0 340px;">
+      <img src="images/demo-hv-mockup.webp" alt="HOOPS Visualize" style="width:100%; border-radius:8px; border:1px solid var(--border); box-shadow:0 4px 24px rgba(0,0,0,.6);">
+    </div>
+  </div>
+  <div class="slide-num">1 / 7</div>
+</section>
+
+<!-- 2. Title -->
+<section class="slide center" id="title" style="background-image: url('images/adobestock_1556003374.jpg'); background-size: cover; background-position: center; background-blend-mode: overlay; background-color: rgba(13,17,23,.92);">
+  <img src="images/ts3d-brand.svg" alt="Tech Soft 3D" style="height:44px; filter:brightness(0) invert(1); opacity:.85; margin-bottom:1.4em;">
   <h1>HOOPS AI MCP</h1>
-  <p style="font-size:1.2em; color:var(--accent2); margin:.4em 0;">CAD Intelligence Platform</p>
+  <p style="font-size:1.2em; color:var(--accent2); margin:.4em 0;">3D CAD Intelligence Platform</p>
   <p class="subtitle" style="margin-top:.8em; max-width:600px;">
-    CAD Viewer &nbsp;·&nbsp; B-Rep Analysis &nbsp;·&nbsp;
+    3D CAD Viewer &nbsp;·&nbsp; B-Rep Analysis &nbsp;·&nbsp;
     Manufacturing Feature Recognition &nbsp;·&nbsp; Similarity Search
   </p>
   <p class="subtitle" style="margin-top:1em;">
     WebAPI (FastAPI) &nbsp;+&nbsp; MCP Server (Claude Desktop)
   </p>
-  <div class="slide-num">1 / 6</div>
+  <div class="slide-num">2 / 7</div>
 </section>
 
-<!-- 2. Architecture -->
-<section class="slide" id="arch">
+<!-- 3. Architecture -->
+<section class="slide" id="arch" style="background-image: url('images/adobestock_1556003374.jpg'); background-size: cover; background-position: center; background-blend-mode: overlay; background-color: rgba(13,17,23,.92);">
   <h2>Architecture</h2>
   <div class="arch">
     <div class="arch-box gray">
@@ -137,7 +177,7 @@
       <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="var(--accent2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:6px;">
         <path d="M12 22V12M12 12C12 12 7 10 7 6V2M12 12C12 12 17 10 17 6V2M9 2h6M5 12h14"/>
       </svg>
-      <strong>MCP Server</strong><small>mcp_server/server.py</small>
+      <strong>MCP Server</strong><small>server.py</small>
     </div>
     <div class="arch-arrow">⟷</div>
     <div class="arch-box">
@@ -145,7 +185,7 @@
       <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:6px;">
         <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
       </svg>
-      <strong>WebAPI</strong><small>FastAPI :8001</small>
+      <strong>WebAPI</strong><small>FastAPI</small>
     </div>
     <div class="arch-arrow">⟷</div>
     <div class="arch-box gray">
@@ -156,25 +196,25 @@
         <line x1="12" y1="13" x2="21" y2="8"/>
         <line x1="12" y1="13" x2="12" y2="21"/>
       </svg>
-      <strong>HOOPS AI</strong><small>ML / CAD Engine</small>
+      <strong>HOOPS AI</strong><small>ML / 3D CAD Engine</small>
     </div>
   </div>
   <ul class="check">
-    <li><strong>HOOPS AI</strong> — Tech Soft 3D 製の CAD 読み込み・形状解析・ML 推論エンジン</li>
+    <li><strong>HOOPS AI</strong> — Tech Soft 3D 製の 3D CAD 読み込み・形状解析・ML 推論エンジン</li>
     <li><strong>WebAPI</strong> — FastAPI で HOOPS AI 機能を REST API として公開</li>
     <li><strong>MCP Server</strong> — Claude Desktop が WebAPI を自然言語で操作できるツール群</li>
-    <li><strong>Claude Desktop</strong> — AI エージェントが MCP ツールを呼び出して CAD 解析タスクを自律実行</li>
+    <li><strong>Claude Desktop</strong> — AI エージェントが MCP ツールを呼び出して 3D CAD 解析タスクを自律実行</li>
   </ul>
-  <div class="slide-num">2 / 6</div>
+  <div class="slide-num">3 / 7</div>
 </section>
 
-<!-- 3. Features -->
-<section class="slide" id="features">
+<!-- 4. Features -->
+<section class="slide" id="features" style="background-image: url('images/adobestock_1556003374.jpg'); background-size: cover; background-position: center; background-blend-mode: overlay; background-color: rgba(13,17,23,.92);">
   <h2>Features</h2>
   <div class="cards">
     <div class="card">
-      <h3>🖥️ CAD Viewer</h3>
-      <p>STEP・SolidWorks・CATIA・NX など 30 以上の CAD フォーマットをブラウザでインタラクティブに 3D 表示。ファイルアップロードまたは共有パスから起動。</p>
+      <h3>🖥️ 3D CAD Viewer</h3>
+      <p>STEP・SolidWorks・CATIA・NX など 30 以上の 3D CAD フォーマットをブラウザでインタラクティブに 3D 表示。ファイルアップロードまたは共有パスから起動。</p>
     </div>
     <div class="card">
       <h3>🔗 B-Rep Analysis</h3>
@@ -182,25 +222,25 @@
     </div>
     <div class="card">
       <h3>🔍 MFR — Manufacturing Feature Recognition</h3>
-      <p>学習済み ML モデルによる Inference（推論）で、CAD ファイルの加工フィーチャ（穴・スロット・ポケット等 24 種）を認識。推論結果をビューアー上に色付けで可視化。</p>
+      <p>学習済み ML モデルによる Inference（推論）で、3D CAD ファイルの加工フィーチャ（穴・スロット・ポケット等 24 種）を認識。推論結果をビューアー上に色付けで可視化。</p>
     </div>
     <div class="card">
-      <h3>🎯 CAD Similarity Search</h3>
-      <p>HOOPS Embeddings モデルで CAD 形状を特徴ベクトルに変換し、FAISS インデックスを使って類似品を高速検索。上位 K 件をスコア付きで返す。</p>
+      <h3>🎯 3D CAD Similarity Search</h3>
+      <p>HOOPS Embeddings モデルで 3D CAD 形状を特徴ベクトルに変換し、FAISS インデックスを使って類似品を高速検索。上位 K 件をスコア付きで返す。</p>
     </div>
   </div>
-  <div class="slide-num">3 / 6</div>
+  <div class="slide-num">4 / 7</div>
 </section>
 
-<!-- 4. WebAPI Endpoints -->
-<section class="slide" id="api-all">
+<!-- 5. WebAPI Endpoints -->
+<section class="slide" id="api-all" style="background-image: url('images/adobestock_1556003374.jpg'); background-size: cover; background-position: center; background-blend-mode: overlay; background-color: rgba(13,17,23,.92);">
   <h2>WebAPI Endpoints</h2>
 
-  <h3>🖥️ CAD Viewer</h3>
+  <h3>🖥️ 3D CAD Viewer</h3>
   <table>
     <tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
-    <tr><td><span class="badge post">POST</span></td><td><code>/CAD/viewer</code></td><td>CAD ビューアー起動（ファイルアップ）</td></tr>
-    <tr><td><span class="badge delete">DELETE</span></td><td><code>/CAD/viewer</code></td><td>CAD ビューアー終了</td></tr>
+    <tr><td><span class="badge post">POST</span></td><td><code>/CAD/viewer</code></td><td>3D CAD ビューアー起動（ファイルアップ）</td></tr>
+    <tr><td><span class="badge delete">DELETE</span></td><td><code>/CAD/viewer</code></td><td>3D CAD ビューアー終了</td></tr>
   </table>
 
   <h3 style="margin-top:1em;">🔗 B-Rep Analysis</h3>
@@ -221,24 +261,24 @@
     <tr><td><span class="badge post">POST</span></td><td><code>/MFR/viewer/colorize</code></td><td>ビューアーを推論結果で色付け</td></tr>
   </table>
 
-  <h3 style="margin-top:1em;">🎯 CAD Similarity Search</h3>
+  <h3 style="margin-top:1em;">🎯 3D CAD Similarity Search</h3>
   <table>
     <tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
     <tr><td><span class="badge post">POST</span></td><td><code>/similarity/search</code></td><td>形状類似検索</td></tr>
   </table>
 
-  <div class="slide-num">4 / 6</div>
+  <div class="slide-num">5 / 7</div>
 </section>
 
-<!-- 5. MCP Tools -->
-<section class="slide" id="mcp">
+<!-- 6. MCP Tools -->
+<section class="slide" id="mcp" style="background-image: url('images/adobestock_1556003374.jpg'); background-size: cover; background-position: center; background-blend-mode: overlay; background-color: rgba(13,17,23,.92);">
   <h2>MCP Tools (Claude Desktop)</h2>
 
-  <h3>🖥️ CAD Viewer</h3>
+  <h3>🖥️ 3D CAD Viewer</h3>
   <table>
     <tr><th>Tool</th><th>Description</th></tr>
-    <tr><td><code>open_cad_viewer</code></td><td>CAD ファイルを 3D ビューアーで開く</td></tr>
-    <tr><td><code>terminate_CAD_viewer</code></td><td>CAD ビューアーを終了</td></tr>
+    <tr><td><code>open_CAD_viewer</code></td><td>3D CAD ファイルを 3D ビューアーで開く</td></tr>
+    <tr><td><code>terminate_CAD_viewer</code></td><td>3D CAD ビューアーを終了</td></tr>
   </table>
 
   <h3 style="margin-top:1em;">🔗 B-Rep Analysis</h3>
@@ -253,43 +293,43 @@
     <tr><th>Tool</th><th>Description</th></tr>
     <tr><td><code>get_MFR_table_of_contents</code></td><td>MFR データセット概要を取得</td></tr>
     <tr><td><code>get_MFR_labels_description</code></td><td>MFR ラベル ID・名前・説明を一覧取得</td></tr>
-    <tr><td><code>search_MFR_files</code></td><td>加工フィーチャー名で CAD ファイルを検索</td></tr>
+    <tr><td><code>search_MFR_files</code></td><td>加工フィーチャー名で 3D CAD ファイルを検索</td></tr>
     <tr><td><code>get_MFR_file_thumbnail</code></td><td>ファイル ID のサムネイル PNG を取得</td></tr>
     <tr><td><code>run_MFR_inference</code></td><td>MFR 推論を実行してビューアーを起動</td></tr>
     <tr><td><code>colorize_MFR_viewer</code></td><td>ビューアーを推論結果で色付け</td></tr>
   </table>
 
-  <h3 style="margin-top:1em;">🎯 CAD Similarity Search</h3>
+  <h3 style="margin-top:1em;">🎯 3D CAD Similarity Search</h3>
   <table>
     <tr><th>Tool</th><th>Description</th></tr>
     <tr><td><code>search_similar_shapes</code></td><td>形状類似検索</td></tr>
   </table>
 
-  <div class="slide-num">5 / 6</div>
+  <div class="slide-num">6 / 7</div>
 </section>
 
-<!-- 6. Summary -->
-<section class="slide center" id="summary">
+<!-- 7. Summary -->
+<section class="slide center" id="summary" style="background-image: url('images/adobestock_1556003374.jpg'); background-size: cover; background-position: center; background-blend-mode: overlay; background-color: rgba(13,17,23,.92);">
   <h2>Summary</h2>
   <div class="cards" style="max-width:900px;">
     <div class="card">
       <h3>🌐 REST API</h3>
-      <p>FastAPI による CAD インテリジェンス API。</p>
+      <p>FastAPI による 3D CAD インテリジェンス API。</p>
     </div>
     <div class="card green">
       <h3>🤖 Claude Integration</h3>
-      <p>MCP 経由で Claude Desktop が CAD 解析を自然言語で実行。</p>
+      <p>MCP 経由で Claude Desktop が 3D CAD 解析を自然言語で実行。</p>
     </div>
     <div class="card">
       <h3>📐 B-Rep / MFR</h3>
-      <p>加工フィーチャー認識・面隣接グラフ・属性抽出で CAD データを深く解析。</p>
+      <p>加工フィーチャー認識・面隣接グラフ・属性抽出で 3D CAD データを深く解析。</p>
     </div>
     <div class="card green">
       <h3>🎯 Similarity Search</h3>
       <p>HOOPS Embeddings + FAISS による高精度な形状類似検索。スコア 0.99+ を実証。</p>
     </div>
   </div>
-  <div class="slide-num">6 / 6</div>
+  <div class="slide-num">7 / 7</div>
 </section>
 
 </body>
