@@ -121,7 +121,7 @@
       <div class="cards">
         <div class="card">
           <h3>📂 3D CAD データ読み込み</h3>
-          <p>HOOPS Exchange ベースで STEP・SolidWorks・CATIA・NX など 30 以上のフォーマットをネイティブサポート。追加パーサー不要。</p>
+          <p>HOOPS Exchangeで STEP・SolidWorks・CATIA・NX など 30 以上のフォーマットをネイティブサポート。追加パーサー不要。</p>
         </div>
         <div class="card">
           <h3>🗄️ データセット構築</h3>
@@ -133,7 +133,7 @@
         </div>
         <div class="card">
           <h3>🖼️ 可視化</h3>
-          <p>HOOPS Visualize for Web 統合により、推論結果を 3D ビューアー上にリアルタイムで色付け表示。</p>
+          <p>HOOPS Visualize for Web の統合により、推論結果を 3D ビューアー上にリアルタイムで可視化。</p>
         </div>
       </div>
     </div>
@@ -200,10 +200,10 @@
     </div>
   </div>
   <ul class="check">
-    <li><strong>HOOPS AI</strong> — Tech Soft 3D 製の 3D CAD 読み込み・形状解析・ML 推論エンジン</li>
+    <li><strong>HOOPS AI</strong> — Tech Soft 3D 製の 3D CAD 読み込み・形状エンコード・ML 推論エンジン</li>
     <li><strong>WebAPI</strong> — FastAPI で HOOPS AI 機能を REST API として公開</li>
     <li><strong>MCP Server</strong> — Claude Desktop が WebAPI を自然言語で操作できるツール群</li>
-    <li><strong>Claude Desktop</strong> — AI エージェントが MCP ツールを呼び出して 3D CAD 解析タスクを自律実行</li>
+    <li><strong>Claude Desktop</strong> — チャットAI が MCP ツールを呼び出して 3D CAD 解析タスクを自律実行</li>
   </ul>
   <div class="slide-num">3 / 7</div>
 </section>
@@ -221,11 +221,11 @@
       <p>B-Rep モデルの面隣接グラフ生成・フェイス/エッジ属性（種類・面積・長さ・二面角等）の抽出。グラフ可視化 (PNG)。</p>
     </div>
     <div class="card">
-      <h3>🔍 MFR — Manufacturing Feature Recognition</h3>
+      <h3>🔍 MFR — 加工フィーチャー認識</h3>
       <p>学習済み ML モデルによる Inference（推論）で、3D CAD ファイルの加工フィーチャ（穴・スロット・ポケット等 24 種）を認識。推論結果をビューアー上に色付けで可視化。</p>
     </div>
     <div class="card">
-      <h3>🎯 3D CAD Similarity Search</h3>
+      <h3>🎯 3Dモデル 類似品検索</h3>
       <p>HOOPS Embeddings モデルで 3D CAD 形状を特徴ベクトルに変換し、FAISS インデックスを使って類似品を高速検索。上位 K 件をスコア付きで返す。</p>
     </div>
   </div>
@@ -250,7 +250,7 @@
     <tr><td><span class="badge post">POST</span></td><td><code>/BRep/attributes</code></td><td>B-Rep フェイス・エッジ属性抽出</td></tr>
   </table>
 
-  <h3 style="margin-top:1em;">🔍 MFR — Manufacturing Feature Recognition</h3>
+  <h3 style="margin-top:1em;">🔍 MFR — 加工フィーチャー認識</h3>
   <table>
     <tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
     <tr><td><span class="badge">GET</span></td><td><code>/MFR/files/search</code></td><td>加工フィーチャー名でファイル検索</td></tr>
@@ -261,7 +261,7 @@
     <tr><td><span class="badge post">POST</span></td><td><code>/MFR/viewer/colorize</code></td><td>ビューアーを推論結果で色付け</td></tr>
   </table>
 
-  <h3 style="margin-top:1em;">🎯 3D CAD Similarity Search</h3>
+  <h3 style="margin-top:1em;">🎯 3Dモデル 類似品検索</h3>
   <table>
     <tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
     <tr><td><span class="badge post">POST</span></td><td><code>/similarity/search</code></td><td>類似形状検索</td></tr>
@@ -288,7 +288,7 @@
     <tr><td><code>get_brep_attributes</code></td><td>B-Rep フェイス・エッジ属性を抽出</td></tr>
   </table>
 
-  <h3 style="margin-top:1em;">🔍 MFR — Manufacturing Feature Recognition</h3>
+  <h3 style="margin-top:1em;">🔍 MFR — 加工フィーチャー認識</h3>
   <table>
     <tr><th>Tool</th><th>Description</th></tr>
     <tr><td><code>get_MFR_table_of_contents</code></td><td>MFR データセット概要を取得</td></tr>
@@ -299,7 +299,7 @@
     <tr><td><code>colorize_MFR_viewer</code></td><td>ビューアーを推論結果で色付け</td></tr>
   </table>
 
-  <h3 style="margin-top:1em;">🎯 3D CAD Similarity Search</h3>
+  <h3 style="margin-top:1em;">🎯 3Dモデル 類似品検索</h3>
   <table>
     <tr><th>Tool</th><th>Description</th></tr>
     <tr><td><code>search_similar_shapes</code></td><td>類似形状検索</td></tr>
@@ -317,7 +317,7 @@
       <p>FastAPI による 3D CAD インテリジェンス API。</p>
     </div>
     <div class="card green">
-      <h3>🤖 Claude Integration</h3>
+      <h3>🤖 Claude インテグレーション</h3>
       <p>MCP 経由で Claude Desktop が 3D CAD 解析を自然言語で実行。</p>
     </div>
     <div class="card">
@@ -325,7 +325,7 @@
       <p>加工フィーチャー認識・面隣接グラフ・属性抽出で 3D CAD データを深く解析。</p>
     </div>
     <div class="card green">
-      <h3>🎯 Similarity Search</h3>
+      <h3>🎯 類似品検索</h3>
       <p>HOOPS Embeddings + FAISS による高精度な類似形状検索。スコア 0.99+ を実証。</p>
     </div>
   </div>
