@@ -53,6 +53,8 @@ MFR_dataset_explorer = None
 MFR_inference_model = None
 MFR_last_predictions: list[Any] = []
 CAD_viewers: list[Any] = []
+embeddings_model = None
+embeddings_result: Optional[dict[str, Any]] = None
 
 
 def get_MFR_dataset_explorer():
@@ -67,6 +69,31 @@ def get_MFR_inference_model():
     if MFR_inference_model is None:
         MFR_inference_model = create_MFR_inference_model()
     return MFR_inference_model
+
+
+def create_embeddings_model():
+    global embeddings_result
+    from hoops_ai.ml.embeddings import HOOPSEmbeddings
+
+    load_env_file()
+
+    notebooks_dir = pathlib.Path(get_required_env("HOOPS_AI_NOTEBOOK_DIR"))
+    model_name = get_required_env("HOOPS_AI_EMBEDDINGS_MODEL_NAME")
+    trained_model = notebooks_dir.parent.joinpath("packages", "trained_ml_models", model_name)
+
+    HOOPSEmbeddings.register_model(
+        model_name="embeddings_model",
+        checkpoint_path=str(trained_model),
+    )
+    embeddings_result = compute_cad_embeddings()
+    return HOOPSEmbeddings
+
+
+def get_embeddings_model():
+    global embeddings_model
+    if embeddings_model is None:
+        embeddings_model = create_embeddings_model()
+    return embeddings_model
 
 
 def _json_safe(value: Any) -> Any:
@@ -500,12 +527,15 @@ def get_brep_attributes(cad_file_path: pathlib.Path) -> dict[str, Any]:
     hoopstools = HOOPSTools()
     hoopstools.adapt_brep(cad_model)
 
+    body_count = cad_model.get_body_count()
+
     brep_encoder = BrepEncoder(cad_model.get_brep())
 
     [face_types, face_areas, face_centroids, face_loops], face_types_descr = brep_encoder.push_face_attributes()
     [edge_types, edge_lengths, edge_dihedrals, edge_convexities], edge_types_descr = brep_encoder.push_edge_attributes()
 
     return {
+        "body_count": body_count,
         "faces": {
             "types": _json_safe(face_types),
             "areas": _json_safe(face_areas),
@@ -520,4 +550,38 @@ def get_brep_attributes(cad_file_path: pathlib.Path) -> dict[str, Any]:
             "convexities": _json_safe(edge_convexities),
             "types_description": _json_safe(edge_types_descr),
         },
+    }
+
+
+def compute_cad_embeddings() -> dict[str, Any]:
+    """Compute shape embeddings for all CAD files in the configured directory."""
+    from hoops_ai.ml.embeddings import HOOPSEmbeddings
+    from hoops_ai.storage import CADFileRetriever, LocalStorageProvider
+
+    load_env_file()
+    notebooks_dir = pathlib.Path(get_required_env("HOOPS_AI_NOTEBOOK_DIR"))
+    cad_sources = notebooks_dir.parent.joinpath("packages", "cadfiles", "fabwave")
+    formats = [".stp", ".step", ".iges", ".igs"]
+
+    if not cad_sources.is_dir():
+        raise RuntimeError(f"Directory not found: {cad_sources}")
+
+    retriever = CADFileRetriever(
+        storage_provider=LocalStorageProvider(directory_path=cad_sources),
+        formats=formats,
+    )
+    cad_files = retriever.get_file_list()
+
+    embedder = HOOPSEmbeddings(model="embeddings_model")
+    embedding_batch = embedder.embed_shape_batch(cad_files, num_workers=4, show_progress=True)
+
+    return {
+        "model": embedding_batch.model,
+        "embedding_dim": embedder.embedding_dim,
+        "file_count": len(cad_files),
+        "embedded_count": len(embedding_batch.ids),
+        "failed_count": embedding_batch.metadata.get("failed_count", 0),
+        "embedding_shape": list(embedding_batch.values.shape),
+        "ids": _json_safe(embedding_batch.ids),
+        "values": _json_safe(embedding_batch.values),
     }
