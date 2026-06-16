@@ -306,6 +306,8 @@ Invoke-RestMethod -Method Post -Uri "http://127.0.0.1:8001/MFR/viewer/colorize"
 
 ### Shape Similarity Search
 
+> **Prerequisite:** Before using this endpoint, you must build the FAISS index by running the notebook `5b_cad_search_using_HOOPS_embeddings.ipynb` up to and including the **Saving an Index** section. This generates `fabwave_embeddings_store.faiss` in the notebooks folder. Without this file the similarity search endpoint will fail.
+
 Upload a CAD file and retrieve the most similar parts from the indexed database using HOOPS Embeddings and a FAISS index.
 
 ```
