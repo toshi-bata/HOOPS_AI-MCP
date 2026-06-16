@@ -8,7 +8,7 @@ See the root [README](../README.md) for an overview of the full platform.
 
 ## Prerequisites
 
-- [uv](https://github.com/astral-sh/uv) installed
+- [uv](https://github.com/astral-sh/uv) installed on the **Claude Desktop machine** (Claude Desktop uses `uv` to launch the MCP server process)
 - The **WebAPI server** running at `http://127.0.0.1:8001`  
   → See [webapi/README.md](../webapi/README.md) for setup instructions
 
