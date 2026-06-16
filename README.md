@@ -1,400 +1,71 @@
 # HOOPS AI MCP
 
-A solution combining the HOOPS AI WebAPI server and MCP server for Claude Desktop integration.
+**HOOPS AI MCP** is a platform for intelligent 3D CAD data analysis powered by [HOOPS AI](https://hoops.com/) (Tech Soft 3D). It wraps HOOPS AI capabilities as a FastAPI REST API and exposes them to Claude Desktop via an MCP Server, enabling engineers to perform advanced 3D CAD analysis through natural language — no code required.
 
-## Structure
+## Features
+
+| Feature | Description |
+|---|---|
+| **3D CAD Viewer** | Renders 30+ formats (STEP, SolidWorks, CATIA, NX, …) interactively in the browser |
+| **B-Rep Analysis** | Generates face adjacency graphs; extracts face/edge attributes (type, area, length, dihedral angle) |
+| **Manufacturing Feature Recognition (MFR)** | Recognizes 24 machining feature types (holes, slots, pockets, …) using a trained ML model; colorizes results in the viewer |
+| **Shape Similarity Search** | Converts shapes to feature vectors with HOOPS Embeddings and retrieves similar parts via a FAISS index (accuracy ≥ 0.99) |
+
+## Architecture
+
+```
+Claude Desktop  ──(natural language)──▶  MCP Server
+                                              │
+                                        REST API calls
+                                              │
+                                         WebAPI (FastAPI)
+                                              │
+                                          HOOPS AI
+                                     (Tech Soft 3D)
+```
+
+- **HOOPS AI** — 3D CAD file loading, geometry encoding, ML inference
+- **WebAPI (FastAPI)** — Exposes HOOPS AI as 11 REST endpoints; leverages HOOPS AI's Python API directly
+- **MCP Server** — Wraps the WebAPI; bridges Claude Desktop via the MCP protocol
+- **Claude Desktop** — Chat AI that autonomously calls MCP tools to carry out end-to-end analysis
+
+## Repository Structure
 
 ```
 HOOPS_AI-MCP/
-├── webapi/         # FastAPI-based REST API (HOOPS AI WebAPI)
-└── mcp_server/     # MCP server for Claude Desktop integration
+├── webapi/         # FastAPI REST API  →  see webapi/README.md
+├── mcp_server/     # MCP server for Claude Desktop  →  see mcp_server/README.md
+└── demo/           # Demo slides and narration scripts
 ```
 
 ---
 
-## 1. Clone the repository
+## Quick Start
+
+### 1. Clone the repository
 
 ```bash
 git clone https://github.com/toshi-bata/HOOPS_AI-MCP.git
 cd HOOPS_AI-MCP
 ```
 
----
+### 2. Set up the WebAPI server
 
-## 2. WebAPI Server Setup
-
-### Requirements
-
-- Python 3.9 (recommended: Miniconda/Anaconda environment)
-- A valid **HOOPS AI license key**
-- HOOPS AI Python package (`hoops_ai_cpu` or `hoops_ai_gpu`) installed in your environment
-
-### Install dependencies
-
-Open a terminal, move into the `webapi` folder, and install:
+See **[webapi/README.md](webapi/README.md)** for full instructions.
 
 ```bash
 cd webapi
 pip install -r requirements.txt
+copy .env.example .env   # then edit .env with your HOOPS AI license key
+cd ..
+C:\Users\<user>\miniconda3\envs\hoops_ai_cpu\python.exe -m uvicorn main:app --host 127.0.0.1 --port 8001
 ```
 
-> Install the `hoops_ai_cpu` or `hoops_ai_gpu` package separately according to your HOOPS AI distribution instructions.
+### 3. Set up the MCP server (Claude Desktop)
 
-### Configure environment variables
+See **[mcp_server/README.md](mcp_server/README.md)** for full instructions.
 
-Copy `.env.example` to `.env` and fill in your values:
-
-```bash
-# Windows
-copy .env.example .env
-
-# macOS / Linux
-cp .env.example .env
-```
-
-Open `.env` and set each variable:
-
-| Variable | Required | Description |
-|---|---|---|
-| `HOOPS_AI_LICENSE` | ✅ | Your HOOPS AI license key |
-| `HOOPS_AI_NOTEBOOK_DIR` | ✅ | Absolute path to your HOOPS AI notebooks directory |
-| `HOOPS_AI_MFR_FLOW_NAME` | ✅ | MFR flow name (dataset files are resolved relative to this) |
-| `HOOPS_AI_MFR_MODEL_NAME` | ✅ | MFR trained model checkpoint filename (e.g. `ts3d_162k_mfr.ckpt`) |
-| `HOOPS_AI_CAD_SHARED_DIR` | optional | Shared folder for CAD files (defaults to `./uploads`) |
-| `HOOPS_AI_MFR_LABELS_DESCRIPTION` | optional | Custom MFR label map (Python dict literal) |
-
-> **Note:** `HOOPS_AI_LICENSE` is read **only** from the `.env` file, not from system environment variables.
-
-Example `.env`:
-
-```
-HOOPS_AI_LICENSE=XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
-HOOPS_AI_NOTEBOOK_DIR=C:\hoops_ai\notebooks
-HOOPS_AI_MFR_FLOW_NAME=cadsynth_1000
-```
-
-### Start the WebAPI server
-
-Run the following from the `webapi/` directory using the Python executable from your HOOPS AI conda environment:
-
-```bash
-cd webapi
-C:\Users\user_name\miniconda3\envs\hoops_ai_cpu\python.exe -m uvicorn main:app --host 127.0.0.1 --port 8001
-```
-
-For development with auto-reload:
-
-```bash
-cd webapi
-C:\Users\user_name\miniconda3\envs\hoops_ai_cpu\python.exe -m uvicorn main:app --host 127.0.0.1 --port 8001 --reload
-```
-
-The API will be available at `http://127.0.0.1:8001`.  
-Interactive docs (Swagger UI) are at `http://127.0.0.1:8001/docs`.
-
----
-
-### API Usage
-
-#### MFR — Search files by feature
-
-Returns CAD file names that contain a given manufacturing feature.
-
-```
-GET /MFR/files/search?feature_name=<name>
-```
-
-**Example:**
-
-```bash
-curl.exe "http://127.0.0.1:8001/MFR/files/search?feature_name=through%20hole"
-# Windows PowerShell
-curl.exe "http://127.0.0.1:8001/MFR/files/search?feature_name=circular%20blind%20step"
-```
-
-**Response:**
-
-```json
-{
-  "file_names": ["bracket_a.stp", "housing_b.stp"],
-  "file_list": [1, 3]
-}
-```
-
----
-
-#### MFR — File thumbnail
-
-Returns the thumbnail PNG image for a given file ID.
-
-```
-GET /MFR/files/{file_id}/thumbnail
-```
-
-**Example:**
-
-```powershell
-Invoke-RestMethod -Uri "http://127.0.0.1:8001/MFR/files/1/thumbnail" -OutFile "thumbnail.png"
-```
-
-**Response:** PNG image (`image/png`)
-
----
-
-#### MFR — List label descriptions
-
-Returns all MFR label IDs with their names and descriptions.
-
-```
-GET /MFR/labels/description
-```
-
-**Example:**
-
-```bash
-curl.exe "http://127.0.0.1:8001/MFR/labels/description"
-```
-
----
-
-#### MFR — Dataset table of contents
-
-Returns a summary of the loaded MFR dataset.
-
-```
-GET /MFR/dataset/table-of-contents
-```
-
-**Example:**
-
-```bash
-curl.exe "http://127.0.0.1:8001/MFR/dataset/table-of-contents"
-```
-
----
-
-#### MFR — Inference
-
-Upload a CAD file and run MFR inference. Launches the CAD viewer and returns predictions, probabilities, and viewer_url.
-
-```
-POST /MFR/inference
-```
-
-**Example:**
-
-```powershell
-curl.exe -X POST "http://127.0.0.1:8001/MFR/inference" `
-    -F "file=@C:\path\to\model.SLDPRT"
-```
-
-**Response:**
-
-```json
-{
-  "predictions": [...],
-  "probabilities": [...],
-  "viewer_url": "http://127.0.0.1:<viewer_port>/index.html"
-}
-```
-
----
-
-#### MFR — Colorize viewer
-
-Apply MFR prediction colors to the last active CAD viewer. Call this after the viewer has fully loaded.
-
-```
-POST /MFR/viewer/colorize
-```
-
-**Example:**
-
-```powershell
-Invoke-RestMethod -Method Post -Uri "http://127.0.0.1:8001/MFR/viewer/colorize"
-```
-
-**Response:**
-
-```json
-{
-  "color_map": {
-    "17": {"name": "through hole", "color_rgb": [255, 0, 0]},
-    "18": {"name": "circular blind step", "color_rgb": [0, 255, 0]}
-  }
-}
-```
-
----
-
-#### CAD Viewer — Browser UI
-
-Open the browser and navigate to:
-
-```
-http://127.0.0.1:8001/CAD/viewer
-```
-
-The page shows two forms:
-
-1. **Upload CAD file** — choose a local file and click *Open viewer*
-2. **CAD file path in shared folder** — enter a filename or path relative to the shared folder and click *Open viewer from path*
-
-Both forms submit to the API and return a JSON response containing `viewer_url`. Copy that URL and open it in your browser to launch the interactive 3D viewer.
-
-> The viewer runs on a **separate port** from the API server. Make sure that port is accessible (not blocked by a firewall).
-
-#### CAD Viewer — Upload via API
-
-```bash
-# Windows PowerShell
-curl.exe -X POST "http://127.0.0.1:8001/CAD/viewer" `
-         -F "file=@C:\path\to\model.stp"
-```
-
-**Response:**
-
-```json
-{
-  "viewer_url": "http://127.0.0.1:<viewer_port>/index.html"
-}
-```
-
-Open the returned `viewer_url` in your browser to view the model.
-
-#### CAD Viewer — Open by shared path
-
-> This endpoint is used internally by the browser UI form and is not listed in the Swagger docs.
-
-```bash
-# Windows PowerShell
-curl.exe -X POST "http://127.0.0.1:8001/CAD/viewer/from-path" `
-         -d "cad_file_path=model.stp"
-```
-
-The path can be a filename relative to the shared folder (`HOOPS_AI_CAD_SHARED_DIR`) or an absolute path within it.
-
-**Response:**
-
-```json
-{
-  "viewer_url": "http://127.0.0.1:<viewer_port>/index.html"
-}
-```
-
-Open the returned `viewer_url` in your browser to view the model.
-
----
-
-#### CAD Viewer — Terminate
-
-Terminate the last active viewer, or all viewers.
-
-```
-DELETE /CAD/viewer
-DELETE /CAD/viewer?all=true
-```
-
-**Example:**
-
-```powershell
-# Terminate last viewer
-Invoke-RestMethod -Method Delete -Uri "http://127.0.0.1:8001/CAD/viewer"
-
-# Terminate all viewers
-Invoke-RestMethod -Method Delete -Uri "http://127.0.0.1:8001/CAD/viewer?all=true"
-```
-
-**Response:**
-
-```json
-{ "terminated": 1 }
-```
-
----
-
-### B-Rep
-
-#### B-Rep — Face adjacency graph
-
-Build a face adjacency graph from the B-rep model of a CAD file. Returns graph data (nodes, edges) and a base64-encoded PNG visualization.
-
-```
-POST /BRep/adjacency-graph
-```
-
-**Example:**
-
-```powershell
-curl.exe -X POST "http://127.0.0.1:8001/BRep/adjacency-graph" `
-    -F "file=@C:\path\to\model.SLDPRT"
-```
-
-**Response:**
-
-```json
-{
-  "graph": {
-    "nodes": [0, 1, 2, ...],
-    "edges": [[0, 1], [1, 2], ...],
-    "num_nodes": 144,
-    "num_edges": 210
-  },
-  "graph_image": "<base64-encoded PNG>"
-}
-```
-
----
-
-#### B-Rep — Face and edge attributes
-
-Extract face and edge attributes from the B-rep model of a CAD file.
-
-```
-POST /BRep/attributes
-```
-
-**Example:**
-
-```powershell
-curl.exe -X POST "http://127.0.0.1:8001/BRep/attributes" `
-    -F "file=@C:\path\to\model.SLDPRT"
-```
-
-**Response:**
-
-```json
-{
-  "faces": {
-    "types": [...], "areas": [...], "centroids": [...],
-    "loops": [...], "types_description": {...}
-  },
-  "edges": {
-    "types": [...], "lengths": [...], "dihedrals": [...],
-    "convexities": [...], "types_description": {...}
-  }
-}
-```
-
----
-
-### Running tests
-
-```bash
-python -m unittest discover -s tests
-```
-
----
-
-## 3. MCP Server Setup (Claude Desktop)
-
-The MCP server connects Claude Desktop to the HOOPS AI WebAPI.
-
-### Register the MCP server in Claude Desktop
-
-1. Open **Claude Desktop**
-2. Go to **Settings** → **Developer** → **Edit Config**
-3. This opens `claude_desktop_config.json`. Add the following entry under `mcpServers`:
+Register the MCP server in `claude_desktop_config.json`:
 
 ```json
 {
@@ -412,24 +83,25 @@ The MCP server connects Claude Desktop to the HOOPS AI WebAPI.
 }
 ```
 
-> Replace `C:\\path\\to\\HOOPS_AI-MCP` with the actual path where you cloned this repository.
+---
 
-4. Save the file and restart Claude Desktop.
+## Demo
 
-### Available MCP tools
+A slide deck and narration scripts are included in the [`demo/`](demo/) folder:
 
-| Tool | Description |
-|---|---|
-| `open_cad_viewer` | Open a CAD file in the 3D viewer and return the viewer URL |
-| `get_MFR_table_of_contents` | Get the MFR dataset summary |
-| `get_MFR_labels_description` | List all MFR label IDs, names, and descriptions |
-| `search_MFR_files` | Find CAD files that contain a given manufacturing feature |
-| `get_MFR_file_thumbnail` | Download the thumbnail PNG for a file ID, returns base64-encoded PNG |
-| `run_MFR_inference` | Run MFR inference on a local CAD file, launches viewer, returns predictions + viewer_url |
-| `colorize_MFR_viewer` | Apply MFR prediction colors to the last active viewer, returns color_map |
-| `terminate_CAD_viewer` | Terminate the last (or all) active CAD viewer(s) |
-| `get_brep_adjacency_graph` | Build B-rep face adjacency graph, returns graph data and base64 PNG |
-| `get_brep_attributes` | Extract B-rep face and edge attributes (types, areas, lengths, etc.) |
+- [`demo/narration_en.md`](demo/narration_en.md) — English narration
+- [`demo/narration_ja.md`](demo/narration_ja.md) — Japanese narration
+- [`demo/index_en.html`](demo/index_en.html) — English slide deck
+- [`demo/index_jp.html`](demo/index_jp.html) — Japanese slide deck
+
+### What the demo covers
+
+1. Ask Claude what HOOPS AI tools are available
+2. Display a 3D CAD file (`helloworld.stp`) in the browser viewer
+3. Run B-Rep analysis on a flange model and display organized results
+4. Query the MFR dataset overview in natural language
+5. Run MFR inference on a SOLIDWORKS part and colorize by feature type
+6. Perform shape similarity search and review results
 
 ---
 
@@ -437,3 +109,4 @@ The MCP server connects Claude Desktop to the HOOPS AI WebAPI.
 
 This project uses the **HOOPS AI** library. A valid HOOPS AI license is required to run the server.  
 Contact [Tech Soft 3D](https://hoops.com/) for licensing information.
+
