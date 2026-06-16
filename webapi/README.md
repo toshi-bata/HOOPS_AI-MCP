@@ -68,6 +68,7 @@ C:\Users\<user>\miniconda3\envs\hoops_ai_cpu\python.exe -m uvicorn main:app --ho
 For development with auto-reload:
 
 ```bash
+cd webapi
 C:\Users\<user>\miniconda3\envs\hoops_ai_cpu\python.exe -m uvicorn main:app --host 127.0.0.1 --port 8001 --reload
 ```
 
