@@ -32,7 +32,7 @@ Copy `.env.example` to `.env` and fill in your values:
 # Windows
 copy .env.example .env
 
-# macOS / Linux
+# Linux
 cp .env.example .env
 ```
 
