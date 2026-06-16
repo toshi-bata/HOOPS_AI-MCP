@@ -32,11 +32,7 @@ pip install -r requirements.txt
 Copy `.env.example` to `.env` and fill in your values:
 
 ```bash
-# Windows
 copy .env.example .env
-
-# Linux
-cp .env.example .env
 ```
 
 | Variable | Required | Description |
