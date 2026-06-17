@@ -56,7 +56,7 @@ See **[webapi/README.md](webapi/README.md)** for full instructions.
 cd webapi
 pip install -r requirements.txt
 copy .env.example .env   # then edit .env with your HOOPS AI license key
-C:\Users\<user>\miniconda3\envs\hoops_ai_cpu\python.exe -m uvicorn main:app --host 127.0.0.1 --port 8001
+<Path\to\HOOPS_AI\install\dir>\.venv\Scripts\python.exe -m uvicorn main:app --host 127.0.0.1 --port 8001
 ```
 
 ### 3. Set up the MCP server (Claude Desktop)
@@ -88,6 +88,7 @@ Register the MCP server in `claude_desktop_config.json`:
 | Component | Version |
 |---|---|
 | HOOPS AI | V1.1 |
+| Python | 3.12 |
 | OS | Windows 11 |
 
 ---

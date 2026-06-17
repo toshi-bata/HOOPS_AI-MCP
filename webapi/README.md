@@ -7,9 +7,9 @@ See the root [README](../README.md) for an overview of the full HOOPS AI MCP pla
 
 ## Requirements
 
-- Python 3.9 (recommended: Miniconda/Anaconda environment)
+- Python 3.12
 - A valid **HOOPS AI license key**
-- HOOPS AI Python package (`hoops_ai_cpu` or `hoops_ai_gpu`) installed in the environment
+- HOOPS AI (CPU or GPU version) installed in the environment
 - **HOOPS AI Tutorials** — the notebooks folder and its contents (ML datasets and pre-trained models) are required to run this server.  
   The tutorials are available at [github.com/techsoft3d/HOOPS-AI-tutorials](https://github.com/techsoft3d/HOOPS-AI-tutorials/tree/main).  
   Data packages (datasets and trained model checkpoints) must be obtained from the Tech Soft 3D File Transfer service by following the HOOPS AI installation instructions.
@@ -25,7 +25,7 @@ cd webapi
 pip install -r requirements.txt
 ```
 
-> Install the `hoops_ai_cpu` or `hoops_ai_gpu` package separately according to your HOOPS AI distribution instructions.
+> Install HOOPS AI (CPU or GPU version) separately according to your HOOPS AI distribution instructions.
 
 ### 2. Configure environment variables
 
@@ -39,10 +39,10 @@ copy .env.example .env
 |---|---|---|
 | `HOOPS_AI_LICENSE` | ✅ | Your HOOPS AI license key |
 | `HOOPS_AI_NOTEBOOK_DIR` | ✅ | Absolute path to your HOOPS AI notebooks directory |
-| `HOOPS_AI_MFR_FLOW_NAME` | ✅ | MFR flow name (dataset files are resolved relative to this) |
-| `HOOPS_AI_MFR_MODEL_NAME` | ✅ | MFR trained model checkpoint filename (e.g. `ts3d_162k_mfr.ckpt`) |
-| `HOOPS_AI_CAD_SHARED_DIR` | optional | Shared folder for CAD files (defaults to `./uploads`) |
-| `HOOPS_AI_MFR_LABELS_DESCRIPTION` | optional | Custom MFR label map (Python dict literal) |
+| `HOOPS_AI_MFR_FLOW_NAME` | optional | MFR flow name (dataset files are resolved relative to this) |
+| `HOOPS_AI_MFR_MODEL_NAME` | optional | MFR trained model checkpoint filename (e.g. `ts3d_162k_mfr.ckpt`) |
+| `HOOPS_AI_EMBEDDINGS_MODEL_NAME` | optional | Embeddings trained model checkpoint filename (e.g. `ts3d_1M_hoops_embeddings.ckpt`) |
+| `HOOPS_AI_FAISS_INDEX_PATH` | optional | FAISS index file for shape similarity search (e.g. `fabwave_embeddings_store.faiss`) |
 
 > **Note:** `HOOPS_AI_LICENSE` is read **only** from the `.env` file, not from system environment variables.
 
@@ -53,22 +53,26 @@ HOOPS_AI_LICENSE=XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
 HOOPS_AI_NOTEBOOK_DIR=C:\hoops_ai\notebooks
 HOOPS_AI_MFR_FLOW_NAME=cadsynth_1000
 HOOPS_AI_MFR_MODEL_NAME=ts3d_162k_mfr.ckpt
+HOOPS_AI_EMBEDDINGS_MODEL_NAME=ts3d_1M_hoops_embeddings.ckpt
+HOOPS_AI_FAISS_INDEX_PATH=fabwave_embeddings_store.faiss
 ```
 
 ### 3. Start the server
 
-Run from the `webapi/` directory using the Python executable from your HOOPS AI conda environment:
+Run from the `webapi/` directory using the Python executable from your HOOPS AI virtual environment:
 
 ```bash
 cd webapi
-C:\Users\<user>\miniconda3\envs\hoops_ai_cpu\python.exe -m uvicorn main:app --host 127.0.0.1 --port 8001
+<Path\to\HOOPS_AI\install\dir>\.venv\Scripts\python.exe -m uvicorn main:app --host 127.0.0.1 --port 8001
 ```
+
+> Replace `<Path\to\HOOPS_AI\install\dir>` with the actual path where HOOPS AI is installed. The `.venv\Scripts\python.exe` executable will use the HOOPS AI packages installed in that virtual environment.
 
 For development with auto-reload:
 
 ```bash
 cd webapi
-C:\Users\<user>\miniconda3\envs\hoops_ai_cpu\python.exe -m uvicorn main:app --host 127.0.0.1 --port 8001 --reload
+<Path\to\HOOPS_AI\install\dir>\.venv\Scripts\python.exe -m uvicorn main:app --host 127.0.0.1 --port 8001 --reload
 ```
 
 - API base URL: `http://127.0.0.1:8001`
