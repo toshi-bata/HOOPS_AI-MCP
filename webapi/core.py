@@ -259,7 +259,11 @@ def create_MFR_dataset_explorer():
 
     notebooks_dir = pathlib.Path(get_required_env("HOOPS_AI_NOTEBOOK_DIR"))
     MFR_flow_name = get_required_env("HOOPS_AI_MFR_FLOW_NAME")
-    flow_root_dir = notebooks_dir.parent.joinpath("packages", "flows", MFR_flow_name)
+
+    # Dataset files are produced by running the ETL tutorial notebook:
+    #   notebooks/3b_workflow_for_MFR_cadsynth.ipynb
+    # Output is written to: <HOOPS_AI_NOTEBOOK_DIR>/out/flows/<HOOPS_AI_MFR_FLOW_NAME>/
+    flow_root_dir = notebooks_dir / "out" / "flows" / MFR_flow_name
 
     return DatasetExplorer(
         merged_store_path=str(flow_root_dir.joinpath(f"{MFR_flow_name}.dataset")),
