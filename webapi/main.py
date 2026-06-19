@@ -17,6 +17,12 @@ async def lifespan(app: FastAPI):
     yield
     if core.MFR_dataset_explorer is not None and hasattr(core.MFR_dataset_explorer, "close"):
         core.MFR_dataset_explorer.close()
+    for viewer in core.CAD_viewers.values():
+        try:
+            viewer.terminate()
+        except Exception:
+            pass
+    core.CAD_viewers.clear()
 
 
 app = FastAPI(
