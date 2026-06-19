@@ -2,7 +2,7 @@ import io
 from typing import Optional
 
 import core
-from fastapi import APIRouter, File, HTTPException, Query, UploadFile
+from fastapi import APIRouter, File, HTTPException, Query, Request, UploadFile
 from fastapi.responses import StreamingResponse
 
 router = APIRouter(prefix="/MFR", tags=["MFR"])
@@ -53,6 +53,7 @@ def MFR_viewer_colorize():
 
 @router.post("/inference")
 def MFR_inference(
+    request: Request,
     file: Optional[UploadFile] = File(None),
     file_id: Optional[str] = Query(None, description="file_id returned by POST /files/upload"),
 ):
@@ -68,7 +69,10 @@ def MFR_inference(
             _, cad_file_path, _ = core.upload_CAD_file_persistent(file)
         else:
             raise HTTPException(status_code=422, detail="Either 'file' or 'file_id' is required.")
-        return core.run_MFR_inference(cad_file_path)
+        result = core.run_MFR_inference(cad_file_path)
+        if result.get("image_url"):
+            result["image_url"] = str(request.base_url).rstrip("/") + result["image_url"]
+        return result
     except HTTPException:
         raise
     except RuntimeError as exc:

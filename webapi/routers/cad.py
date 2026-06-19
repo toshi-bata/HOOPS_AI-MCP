@@ -58,8 +58,8 @@ def CAD_viewer(
         else:
             raise HTTPException(status_code=422, detail="Either 'file' or 'file_id' is required.")
         result = core.create_CAD_viewer(cad_file_path)
-        if result.get("png_url"):
-            result["png_url"] = str(request.base_url).rstrip("/") + result["png_url"]
+        if result.get("image_url"):
+            result["image_url"] = str(request.base_url).rstrip("/") + result["image_url"]
         return result
     except HTTPException:
         raise
@@ -83,8 +83,8 @@ def CAD_viewer_terminate(all: bool = False):
 def CAD_viewer_from_path(request: Request, cad_file_path: str = Form(...)):
     try:
         result = core.create_CAD_viewer(core.get_shared_CAD_file(cad_file_path))
-        if result.get("png_url"):
-            result["png_url"] = str(request.base_url).rstrip("/") + result["png_url"]
+        if result.get("image_url"):
+            result["image_url"] = str(request.base_url).rstrip("/") + result["image_url"]
         return result
     except RuntimeError as exc:
         raise HTTPException(status_code=500, detail=str(exc)) from exc

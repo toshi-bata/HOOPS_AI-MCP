@@ -1,13 +1,14 @@
 from typing import Optional
 
 import core
-from fastapi import APIRouter, File, HTTPException, Query, UploadFile
+from fastapi import APIRouter, File, HTTPException, Query, Request, UploadFile
 
 router = APIRouter(prefix="/BRep", tags=["BRep"])
 
 
 @router.post("/adjacency-graph")
 def brep_adjacency_graph(
+    request: Request,
     file: Optional[UploadFile] = File(None),
     file_id: Optional[str] = Query(None, description="file_id returned by POST /files/upload"),
 ):
@@ -22,7 +23,10 @@ def brep_adjacency_graph(
             _, cad_file_path, _ = core.upload_CAD_file_persistent(file)
         else:
             raise HTTPException(status_code=422, detail="Either 'file' or 'file_id' is required.")
-        return core.build_brep_adjacency_graph(cad_file_path)
+        result = core.build_brep_adjacency_graph(cad_file_path)
+        if result.get("image_url"):
+            result["image_url"] = str(request.base_url).rstrip("/") + result["image_url"]
+        return result
     except HTTPException:
         raise
     except RuntimeError as exc:

@@ -59,7 +59,7 @@ def upload_cad_model(cad_file_path: str) -> dict:
 
 @mcp.tool()
 def open_cad_viewer(cad_file_path: str = "", file_id: str = "") -> dict:
-    """Open a CAD file in CADViewer and return the viewer URL and a PNG preview URL.
+    """Open a CAD file in CADViewer and return the viewer URL and a PNG preview URL (image_url).
 
     Provide either:
     - file_id: ID from a previous upload_cad_model() call (recommended, avoids re-upload)
@@ -76,7 +76,7 @@ def open_cad_viewer(cad_file_path: str = "", file_id: str = "") -> dict:
     viewer_url = data.get("viewer_url")
     if not viewer_url:
         raise RuntimeError(f"Viewer URL was not returned: {data}")
-    return {"viewer_url": viewer_url, "png_url": data.get("png_url")}
+    return {"viewer_url": viewer_url, "image_url": data.get("image_url")}
 
 
 @mcp.tool()
@@ -185,7 +185,7 @@ def get_brep_adjacency_graph(cad_file_path: str = "", file_id: str = "") -> dict
     - file_id: ID from a previous upload_cad_model() call (recommended, avoids re-upload)
     - cad_file_path: local path to the CAD file (will be uploaded automatically)
 
-    Returns graph data (nodes, edges, counts) and a base64-encoded PNG visualization.
+    Returns graph data (nodes, edges, counts) and image_url: a URL to a PNG visualization.
     """
     fid = _resolve_file_id(cad_file_path, file_id)
     response = httpx.post(

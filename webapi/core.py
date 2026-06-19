@@ -382,8 +382,11 @@ def run_MFR_inference(cad_file_path: pathlib.Path) -> dict[str, Any]:
     MFR_last_predictions = _json_safe(predictions)
 
     viewer_url = None
+    image_url = None
     try:
-        viewer_url = create_CAD_viewer(cad_file_path)
+        viewer_result = create_CAD_viewer(cad_file_path)
+        viewer_url = viewer_result.get("viewer_url")
+        image_url = viewer_result.get("image_url")
     except Exception:
         pass
 
@@ -391,6 +394,7 @@ def run_MFR_inference(cad_file_path: pathlib.Path) -> dict[str, Any]:
         "predictions": _json_safe(predictions),
         "probabilities": _json_safe(probabilities),
         "viewer_url": viewer_url,
+        "image_url": image_url,
     }
 
 
@@ -591,7 +595,7 @@ def create_CAD_viewer(cad_file_path: pathlib.Path) -> dict[str, Any]:
     if png_path and pathlib.Path(png_path).exists():
         png_url = "/out/" + pathlib.Path(png_path).name
 
-    return {"viewer_url": viewer_url, "png_url": png_url}
+    return {"viewer_url": viewer_url, "image_url": png_url}
 
 
 def terminate_CAD_viewer(terminate_all: bool = False) -> dict[str, Any]:
@@ -611,8 +615,6 @@ def terminate_CAD_viewer(terminate_all: bool = False) -> dict[str, Any]:
 
 
 def build_brep_adjacency_graph(cad_file_path: pathlib.Path) -> dict[str, Any]:
-    import base64
-
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
@@ -637,20 +639,20 @@ def build_brep_adjacency_graph(cad_file_path: pathlib.Path) -> dict[str, Any]:
         "num_edges": adj_graph.number_of_edges(),
     }
 
-    # Graph image as base64 PNG
+    # Graph image saved to /out and returned as URL
+    CAD_VIEWER_OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+    image_filename = f"{uuid.uuid4()}.png"
+    image_path = CAD_VIEWER_OUTPUT_DIR / image_filename
     fig, ax = plt.subplots(figsize=(8, 8))
     pos = nx.kamada_kawai_layout(adj_graph)
     nx.draw_networkx(adj_graph, pos, arrows=False, ax=ax)
     ax.axis("off")
-    buf = io.BytesIO()
-    fig.savefig(buf, format="png", bbox_inches="tight")
+    fig.savefig(str(image_path), format="png", bbox_inches="tight")
     plt.close(fig)
-    buf.seek(0)
-    graph_image_b64 = base64.b64encode(buf.read()).decode("utf-8")
 
     return {
         "graph": graph_data,
-        "graph_image": graph_image_b64,
+        "image_url": f"/out/{image_filename}",
     }
 
 
