@@ -1,5 +1,5 @@
 import core
-from fastapi import APIRouter, File, Form, HTTPException, Query, UploadFile
+from fastapi import APIRouter, File, Form, HTTPException, Query, Request, UploadFile
 from fastapi.responses import HTMLResponse
 from typing import Optional
 
@@ -42,6 +42,7 @@ def CAD_viewer_upload_page():
 
 @router.post("/viewer")
 def CAD_viewer(
+    request: Request,
     file: Optional[UploadFile] = File(None),
     file_id: Optional[str] = Query(None, description="file_id returned by POST /files/upload"),
 ):
@@ -56,7 +57,10 @@ def CAD_viewer(
             _, cad_file_path, _ = core.upload_CAD_file_persistent(file)
         else:
             raise HTTPException(status_code=422, detail="Either 'file' or 'file_id' is required.")
-        return {"viewer_url": core.create_CAD_viewer(cad_file_path)}
+        result = core.create_CAD_viewer(cad_file_path)
+        if result.get("png_url"):
+            result["png_url"] = str(request.base_url).rstrip("/") + result["png_url"]
+        return result
     except HTTPException:
         raise
     except RuntimeError as exc:
@@ -76,9 +80,12 @@ def CAD_viewer_terminate(all: bool = False):
 
 
 @router.post("/viewer/from-path")
-def CAD_viewer_from_path(cad_file_path: str = Form(...)):
+def CAD_viewer_from_path(request: Request, cad_file_path: str = Form(...)):
     try:
-        return {"viewer_url": core.create_CAD_viewer(core.get_shared_CAD_file(cad_file_path))}
+        result = core.create_CAD_viewer(core.get_shared_CAD_file(cad_file_path))
+        if result.get("png_url"):
+            result["png_url"] = str(request.base_url).rstrip("/") + result["png_url"]
+        return result
     except RuntimeError as exc:
         raise HTTPException(status_code=500, detail=str(exc)) from exc
     except Exception as exc:

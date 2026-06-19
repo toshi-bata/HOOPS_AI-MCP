@@ -58,8 +58,8 @@ def upload_cad_model(cad_file_path: str) -> dict:
 
 
 @mcp.tool()
-def open_cad_viewer(cad_file_path: str = "", file_id: str = "") -> str:
-    """Open a CAD file in CADViewer and return the generated viewer URL.
+def open_cad_viewer(cad_file_path: str = "", file_id: str = "") -> dict:
+    """Open a CAD file in CADViewer and return the viewer URL and a PNG preview URL.
 
     Provide either:
     - file_id: ID from a previous upload_cad_model() call (recommended, avoids re-upload)
@@ -76,7 +76,7 @@ def open_cad_viewer(cad_file_path: str = "", file_id: str = "") -> str:
     viewer_url = data.get("viewer_url")
     if not viewer_url:
         raise RuntimeError(f"Viewer URL was not returned: {data}")
-    return viewer_url
+    return {"viewer_url": viewer_url, "png_url": data.get("png_url")}
 
 
 @mcp.tool()

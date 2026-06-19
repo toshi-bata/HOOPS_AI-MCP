@@ -558,7 +558,7 @@ def get_shared_CAD_file(cad_file_path: str) -> pathlib.Path:
     return resolved_path
 
 
-def create_CAD_viewer(cad_file_path: pathlib.Path) -> str:
+def create_CAD_viewer(cad_file_path: pathlib.Path) -> dict[str, Any]:
     from hoops_ai.cadaccess import HOOPSLoader, HOOPSTools
     from hoops_ai.insights import CADViewer
 
@@ -569,7 +569,7 @@ def create_CAD_viewer(cad_file_path: pathlib.Path) -> str:
 
     tools = HOOPSTools()
     scs_path = CAD_VIEWER_OUTPUT_DIR / (cad_file_path.stem + ".scs")
-    _png_path, scs_path = tools.exportStreamCache(
+    png_path, scs_path = tools.exportStreamCache(
         model,
         filename=str(scs_path),
         is_white_background=True,
@@ -586,7 +586,12 @@ def create_CAD_viewer(cad_file_path: pathlib.Path) -> str:
         raise RuntimeError("CADViewer did not start.")
 
     CAD_viewers.append(viewer)
-    return viewer_url
+
+    png_url = None
+    if png_path and pathlib.Path(png_path).exists():
+        png_url = "/out/" + pathlib.Path(png_path).name
+
+    return {"viewer_url": viewer_url, "png_url": png_url}
 
 
 def terminate_CAD_viewer(terminate_all: bool = False) -> dict[str, Any]:
