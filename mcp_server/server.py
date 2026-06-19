@@ -39,8 +39,12 @@ def upload_cad_model(cad_file_path: str) -> dict:
     and returns the same file_id without transferring the file again.
 
     Always call this tool first when working with a CAD file, then pass the returned
-    file_id to other tools (open_cad_viewer, run_MFR_inference, etc.) to avoid
-    re-uploading the same model multiple times.
+    file_id to other tools (get_brep_attributes, get_brep_adjacency_graph,
+    run_MFR_inference, search_similar_shapes, etc.) to avoid re-uploading the same
+    model multiple times.
+
+    NOTE: Do NOT call open_cad_viewer unless the user explicitly asks to open or
+    display a viewer (e.g. "open the viewer", "show it in the viewer", "launch viewer").
 
     Returns file_id, filename, and already_existed flag.
     """
@@ -59,7 +63,14 @@ def upload_cad_model(cad_file_path: str) -> dict:
 
 @mcp.tool()
 def open_cad_viewer(cad_file_path: str = "", file_id: str = "") -> dict:
-    """Open a CAD file in CADViewer and return the viewer URL and a PNG preview URL (image_url).
+    """Open a CAD file in the CADViewer 3D browser-based viewer and return the viewer URL.
+
+    STRICT RULE: Call this tool ONLY when the user's message contains explicit viewer
+    launch intent, such as: "open the viewer", "launch the viewer", "open CADViewer",
+    "open in browser". Do NOT call this tool for: "show me", "display", "give me",
+    "get", "analyze", or any request that does not specifically mention opening a viewer.
+    Requests like "show me the B-Rep info" or "give me the model info" must NOT trigger
+    this tool — use get_brep_attributes or get_brep_adjacency_graph instead.
 
     Provide either:
     - file_id: ID from a previous upload_cad_model() call (recommended, avoids re-upload)
@@ -124,18 +135,14 @@ def get_MFR_file_thumbnail(file_id: int) -> str:
 
 @mcp.tool()
 def run_MFR_inference(cad_file_path: str = "", file_id: str = "") -> dict:
-    """Run MFR inference on a CAD file and launch the CAD viewer.
+    """Run MFR inference on a CAD file, colorize the viewer, and return results.
 
     Provide either:
     - file_id: ID from a previous upload_cad_model() call (recommended, avoids re-upload)
     - cad_file_path: local path to the CAD file (will be uploaded automatically)
 
-    Returns predictions, probabilities, and viewer_url.
-
-    After calling this function:
-    1. Share the viewer_url with the user and ask them to open it in a browser.
-    2. Wait for the user to confirm that the 3D model has fully loaded in the viewer.
-    3. Only call colorize_MFR_viewer() after receiving confirmation from the user.
+    Returns predictions, probabilities, viewer_url, image_url, and color_map.
+    color_map contains only the labels present in the model: {label_id: {name, color_rgb}}.
     """
     fid = _resolve_file_id(cad_file_path, file_id)
     response = httpx.post(
@@ -143,22 +150,6 @@ def run_MFR_inference(cad_file_path: str = "", file_id: str = "") -> dict:
         params={"file_id": fid},
         timeout=300,
     )
-    response.raise_for_status()
-    return response.json()
-
-
-@mcp.tool()
-def colorize_MFR_viewer() -> dict:
-    """
-    Apply MFR prediction colors to the last active CAD viewer.
-
-    This function must be called only after the user has confirmed that the 3D model
-    has fully loaded in the browser viewer opened by run_MFR_inference().
-    Do NOT call this automatically — always wait for explicit instruction from the user.
-
-    Returns color_map: {label_id: {name, color_rgb}}.
-    """
-    response = httpx.post(f"{API_BASE}/MFR/viewer/colorize", timeout=120)
     response.raise_for_status()
     return response.json()
 
@@ -200,6 +191,9 @@ def get_brep_adjacency_graph(cad_file_path: str = "", file_id: str = "") -> dict
 @mcp.tool()
 def get_brep_attributes(cad_file_path: str = "", file_id: str = "") -> dict:
     """Extract face and edge attributes from the B-rep model of a CAD file.
+
+    Use this tool whenever the user asks to "show", "display", "get", or "give"
+    B-Rep or model information — without explicitly requesting to open a viewer.
 
     Provide either:
     - file_id: ID from a previous upload_cad_model() call (recommended, avoids re-upload)

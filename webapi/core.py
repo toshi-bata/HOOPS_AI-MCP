@@ -54,6 +54,7 @@ MFR_dataset_explorer = None
 MFR_inference_model = None
 MFR_last_predictions: list[Any] = []
 CAD_viewers: dict[str, Any] = {}
+CAD_face_colors: dict[str, list] = {}  # scs_filename -> [[r,g,b], ...] indexed by face_id
 cad_searcher = None
 shape_index = None
 
@@ -373,6 +374,8 @@ def search_MFR_files(feature_name: str) -> dict[str, Any]:
 
 
 def run_MFR_inference(cad_file_path: pathlib.Path) -> dict[str, Any]:
+    from hoops_ai.insights.utils import ColorPalette
+
     global MFR_last_predictions
 
     inference_model = get_MFR_inference_model()
@@ -390,48 +393,42 @@ def run_MFR_inference(cad_file_path: pathlib.Path) -> dict[str, Any]:
     except Exception:
         pass
 
-    return {
-        "predictions": _json_safe(predictions),
-        "probabilities": _json_safe(probabilities),
-        "viewer_url": viewer_url,
-        "image_url": image_url,
-    }
-
-
-def colorize_MFR_viewer() -> dict[str, Any]:
-    import hoops_ai.insights.utils
-    from hoops_ai.insights.utils import ColorPalette
-
-    if not CAD_viewers:
-        raise RuntimeError("No active CAD viewer.")
-    if not MFR_last_predictions:
-        raise RuntimeError("No inference results available. Run inference first.")
-
+    # Colorize viewer faces based on predictions
     labels_description = get_MFR_labels_description()
     color_palette = ColorPalette.from_labels(
         labels_description,
         reserved_colors={0: (200, 200, 200)},
     )
 
-    viewer = next(reversed(CAD_viewers.values()))
-    import numpy as np
-    predictions_array = np.array(MFR_last_predictions)
-    face_groups = hoops_ai.insights.utils.group_predictions_by_label(
-        predictions_array, color_palette, exclude_labels={}
-    )
-    viewer.color_faces_by_groups(face_groups, delay=0.5, verbose=True)
-    all_zero_faces = [i for i, v in enumerate(MFR_last_predictions) if v == 0]
-    if all_zero_faces:
-        viewer.set_face_color(all_zero_faces, [255, 255, 255])
+    face_colors: list[list[int]] = []
+    for label_id in MFR_last_predictions:
+        rgb = color_palette.get_color(int(label_id))
+        face_colors.append([int(rgb[0]), int(rgb[1]), int(rgb[2])])
 
+    if CAD_viewers:
+        last_viewer_info = next(reversed(CAD_viewers.values()))
+        scs_filename = last_viewer_info.get("scs_filename")
+        if scs_filename:
+            CAD_face_colors[scs_filename] = face_colors
+
+    # Build color legend for only the labels present in this model
+    present_label_ids = set(int(lid) for lid in MFR_last_predictions)
     color_map = {
         str(label_id): {
             "name": info["name"],
             "color_rgb": list(color_palette.get_color(label_id)),
         }
         for label_id, info in labels_description.items()
+        if int(label_id) in present_label_ids
     }
-    return {"color_map": color_map}
+
+    return {
+        "predictions": _json_safe(predictions),
+        "probabilities": _json_safe(probabilities),
+        "viewer_url": viewer_url,
+        "image_url": image_url,
+        "color_map": color_map,
+    }
 
 
 def get_MFR_file_thumbnail(file_id: int) -> bytes:
@@ -564,55 +561,35 @@ def get_shared_CAD_file(cad_file_path: str) -> pathlib.Path:
 
 def create_CAD_viewer(cad_file_path: pathlib.Path) -> dict[str, Any]:
     from hoops_ai.cadaccess import HOOPSLoader, HOOPSTools
-    from hoops_ai.insights import CADViewer
 
     CAD_VIEWER_OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-
     file_key = str(cad_file_path.resolve())
 
-    # Reuse existing viewer for the same file if still alive
+    # Reuse if SCS already exists for this file
+    scs_path = CAD_VIEWER_OUTPUT_DIR / (cad_file_path.stem + ".scs")
     existing = CAD_viewers.get(file_key)
-    if existing is not None:
-        try:
-            status = _json_safe(existing.get_status())
-            viewer_url = existing._get_viewer_url()
-            if status.get("port") and viewer_url:
-                scs_path = CAD_VIEWER_OUTPUT_DIR / (cad_file_path.stem + ".scs")
-                png_path = str(scs_path).replace(".scs", "_white.png")
-                png_url = "/out/" + pathlib.Path(png_path).name if pathlib.Path(png_path).exists() else None
-                return {"viewer_url": viewer_url, "image_url": png_url}
-        except Exception:
-            pass
-        CAD_viewers.pop(file_key, None)
+    if existing and scs_path.exists():
+        png_url = f"/out/{existing['png_filename']}" if existing.get("png_filename") else None
+        return {"viewer_url": f"/CAD/viewer/show?scs={scs_path.name}", "image_url": png_url}
 
     cad_loader = HOOPSLoader()
     model = cad_loader.create_from_file(str(cad_file_path))
 
     tools = HOOPSTools()
-    scs_path = CAD_VIEWER_OUTPUT_DIR / (cad_file_path.stem + ".scs")
     png_path, scs_path = tools.exportStreamCache(
         model,
         filename=str(scs_path),
         is_white_background=True,
         overwrite=True,
     )
+    scs_path = pathlib.Path(scs_path)
+    png_path = pathlib.Path(png_path) if png_path else None
 
-    viewer = CADViewer(static_folder=CAD_VIEWER_OUTPUT_DIR)
-    viewer.load_scs_file(scs_path)
-    viewer.show()
+    png_filename = png_path.name if png_path and png_path.exists() else None
+    CAD_viewers[file_key] = {"scs_filename": scs_path.name, "png_filename": png_filename}
 
-    status = _json_safe(viewer.get_status())
-    viewer_url = viewer._get_viewer_url()
-    if not status.get("port") or not viewer_url:
-        raise RuntimeError("CADViewer did not start.")
-
-    CAD_viewers[file_key] = viewer
-
-    png_url = None
-    if png_path and pathlib.Path(png_path).exists():
-        png_url = "/out/" + pathlib.Path(png_path).name
-
-    return {"viewer_url": viewer_url, "image_url": png_url}
+    png_url = f"/out/{png_filename}" if png_filename else None
+    return {"viewer_url": f"/CAD/viewer/show?scs={scs_path.name}", "image_url": png_url}
 
 
 def terminate_CAD_viewer(terminate_all: bool = False) -> dict[str, Any]:
@@ -621,13 +598,10 @@ def terminate_CAD_viewer(terminate_all: bool = False) -> dict[str, Any]:
 
     if terminate_all:
         count = len(CAD_viewers)
-        for viewer in CAD_viewers.values():
-            viewer.terminate()
         CAD_viewers.clear()
         return {"terminated": count}
     else:
-        file_key, viewer = next(reversed(CAD_viewers.items()))
-        viewer.terminate()
+        file_key = next(reversed(CAD_viewers))
         del CAD_viewers[file_key]
         return {"terminated": 1}
 

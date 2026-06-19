@@ -3,3 +3,4 @@ __pycache__/
 *.py[cod]
 uploads/
 out/
+static/hoops-web-viewer-monolith.mjs

@@ -1,4 +1,9 @@
 from contextlib import asynccontextmanager
+import mimetypes
+import pathlib
+
+mimetypes.init()
+mimetypes.add_type("application/javascript", ".mjs")
 
 import core
 from fastapi import FastAPI
@@ -17,11 +22,6 @@ async def lifespan(app: FastAPI):
     yield
     if core.MFR_dataset_explorer is not None and hasattr(core.MFR_dataset_explorer, "close"):
         core.MFR_dataset_explorer.close()
-    for viewer in core.CAD_viewers.values():
-        try:
-            viewer.terminate()
-        except Exception:
-            pass
     core.CAD_viewers.clear()
 
 
@@ -38,4 +38,8 @@ app.include_router(similarity.router)
 
 core.CAD_VIEWER_OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 app.mount("/out", StaticFiles(directory=str(core.CAD_VIEWER_OUTPUT_DIR)), name="out")
+
+_static_dir = pathlib.Path(__file__).parent / "static"
+_static_dir.mkdir(exist_ok=True)
+app.mount("/static", StaticFiles(directory=str(_static_dir)), name="static")
 

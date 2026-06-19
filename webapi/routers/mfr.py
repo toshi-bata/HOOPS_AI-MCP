@@ -41,16 +41,6 @@ def MFR_file_thumbnail(file_id: int):
         raise HTTPException(status_code=500, detail=str(exc)) from exc
 
 
-@router.post("/viewer/colorize")
-def MFR_viewer_colorize():
-    try:
-        return core.colorize_MFR_viewer()
-    except RuntimeError as exc:
-        raise HTTPException(status_code=400, detail=str(exc)) from exc
-    except Exception as exc:
-        raise HTTPException(status_code=500, detail=f"Colorize failed: {exc}") from exc
-
-
 @router.post("/inference")
 def MFR_inference(
     request: Request,
@@ -70,8 +60,9 @@ def MFR_inference(
         else:
             raise HTTPException(status_code=422, detail="Either 'file' or 'file_id' is required.")
         result = core.run_MFR_inference(cad_file_path)
-        if result.get("image_url"):
-            result["image_url"] = str(request.base_url).rstrip("/") + result["image_url"]
+        for key in ("viewer_url", "image_url"):
+            if result.get(key) and result[key].startswith("/"):
+                result[key] = str(request.base_url).rstrip("/") + result[key]
         return result
     except HTTPException:
         raise

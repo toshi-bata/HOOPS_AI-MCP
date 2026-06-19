@@ -35,7 +35,21 @@ pip install -r requirements.txt
 
 > Install HOOPS AI (CPU or GPU version) separately according to your HOOPS AI distribution instructions.
 
-### 2. Configure environment variables
+### 2. Place the web viewer JS file
+
+The 3D viewer uses the HOOPS Web Viewer monolith JS (not tracked in git). Copy it manually:
+
+**Windows:**
+```bat
+copy "<HOOPS_AI_INSTALL_DIR>\.venv\Lib\site-packages\hoops_viewer\static\javascript\communicator\web-viewer-monolith\hoops-web-viewer-monolith.mjs" "webapi\static\hoops-web-viewer-monolith.mjs"
+```
+
+**Linux:**
+```bash
+cp "<hoops_ai_install_dir>/.venv/lib/python3.12/site-packages/hoops_viewer/static/javascript/communicator/web-viewer-monolith/hoops-web-viewer-monolith.mjs" "webapi/static/hoops-web-viewer-monolith.mjs"
+```
+
+### 3. Configure environment variables
 
 Copy `.env.example` to `.env` and fill in your values:
 
@@ -69,7 +83,7 @@ HOOPS_AI_EMBEDDINGS_MODEL_NAME=ts3d_1M_hoops_embeddings.ckpt
 HOOPS_AI_FAISS_INDEX_PATH=fabwave_embeddings_store.faiss
 ```
 
-### 3. Start the server
+### 4. Start the server
 
 Run from the `webapi/` directory using the Python executable from your HOOPS AI virtual environment.
 

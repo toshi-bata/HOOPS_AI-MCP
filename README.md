@@ -104,6 +104,14 @@ Register the MCP server in `claude_desktop_config.json`:
 
 ## License
 
-This project uses the **HOOPS AI** library. A valid HOOPS AI license is required to run the server.  
-Contact [Tech Soft 3D](https://www.techsoft3d.com/developers/products/hoops-ai/) for licensing information.
+This project uses the following **Tech Soft 3D** libraries:
+
+| Library | Required for |
+|---|---|
+| **HOOPS AI** | CAD file loading, B-Rep analysis, MFR inference, shape similarity search |
+| **HOOPS Web Viewer** | 3D CAD Viewer feature (`open_cad_viewer`, `run_MFR_inference`) in a server–client environment |
+
+> **Note:** In a server–client deployment where the WebAPI server and the browser client run on separate machines, a valid **HOOPS Web Viewer** license is required in addition to the HOOPS AI license.
+
+Contact [Tech Soft 3D](https://www.techsoft3d.com/contact/) for licensing information.
 
