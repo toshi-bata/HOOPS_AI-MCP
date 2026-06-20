@@ -68,12 +68,12 @@ def CAD_viewer_show(scs: str = Query(..., description="SCS filename in out/ dire
     <h2 style="color:#ff5555;margin:0 0 .5em">WebGL Error</h2>
     <p id="errorDetail" style="margin:0 0 1em;font-size:.95em"></p>
     <details style="text-align:left;font-size:.85em;color:#aaa">
-      <summary style="cursor:pointer;color:#ccc">Firefox の場合の確認事項</summary>
+      <summary style="cursor:pointer;color:#ccc">Checklist for Firefox users</summary>
       <ul style="margin:.5em 0 0 1em;line-height:1.8">
-        <li>アドレスバーに <code>about:config</code> を入力</li>
-        <li><code>webgl.disabled</code> → <strong>false</strong> であること</li>
-        <li><code>privacy.resistFingerprinting</code> → <strong>false</strong> であること</li>
-        <li>設定 → 一般 → パフォーマンス →「ハードウェアアクセラレーション」が有効であること</li>
+        <li>Type <code>about:config</code> in the address bar</li>
+        <li><code>webgl.disabled</code> → must be <strong>false</strong></li>
+        <li><code>privacy.resistFingerprinting</code> → must be <strong>false</strong></li>
+        <li>Settings → General → Performance → "Use hardware acceleration" must be enabled</li>
       </ul>
     </details>
   </div>
@@ -85,7 +85,7 @@ def CAD_viewer_show(scs: str = Query(..., description="SCS filename in out/ dire
       if (!gl) {{
         const msg = document.getElementById('errorMsg');
         document.getElementById('errorDetail').textContent =
-          'このブラウザーでは WebGL が利用できません。Firefox の設定で WebGL が無効化されているか、ハードウェアアクセラレーションが無効の可能性があります。';
+          'WebGL is not available in this browser. WebGL may be disabled in Firefox settings, or hardware acceleration may be turned off.';
         msg.style.display = 'block';
         return false;
       }}
