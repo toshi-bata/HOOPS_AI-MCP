@@ -6,8 +6,8 @@ from typing import Optional
 router = APIRouter(prefix="/CAD", tags=["CAD Viewer"])
 
 
-def _get_session_id(request: Request) -> str:
-    return request.headers.get("X-Session-ID", "default")
+def _get_session_id(request: Request) -> Optional[str]:
+    return request.headers.get("X-Session-ID") or None
 
 
 @router.get("/viewer", response_class=HTMLResponse)
@@ -147,6 +147,7 @@ def _resolve_urls(result: dict, base_url: str) -> dict:
     for key in ("viewer_url", "image_url"):
         if result.get(key) and result[key].startswith("/"):
             result[key] = base_url.rstrip("/") + result[key]
+    result.pop("_scs_filename", None)
     return result
 
 

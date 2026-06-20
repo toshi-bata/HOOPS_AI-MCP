@@ -8,8 +8,8 @@ from fastapi.responses import StreamingResponse
 router = APIRouter(prefix="/MFR", tags=["MFR"])
 
 
-def _get_session_id(request: Request) -> str:
-    return request.headers.get("X-Session-ID", "default")
+def _get_session_id(request: Request) -> Optional[str]:
+    return request.headers.get("X-Session-ID") or None
 
 
 @router.get("/files/search")
@@ -67,6 +67,7 @@ def MFR_inference(
         for key in ("viewer_url", "image_url"):
             if result.get(key) and result[key].startswith("/"):
                 result[key] = str(request.base_url).rstrip("/") + result[key]
+        result.pop("_scs_filename", None)
         return result
     except HTTPException:
         raise
