@@ -9,7 +9,7 @@ See the root [README](../README.md) for an overview of the full platform.
 ## Prerequisites
 
 - [uv](https://github.com/astral-sh/uv) installed on the **Claude Desktop machine** (Claude Desktop uses `uv` to launch the MCP server process)
-- The **WebAPI server** running at `http://127.0.0.1:8001`  
+- The **WebAPI server** running and accessible (default: `http://127.0.0.1:8001`)  
   → See [webapi/README.md](../webapi/README.md) for setup instructions
 
 ---
@@ -39,6 +39,31 @@ See the root [README](../README.md) for an overview of the full platform.
 ```
 
 > Replace `C:\\path\\to\\HOOPS_AI-MCP` with the actual path where you cloned this repository.
+
+**When the WebAPI server is on a different machine (client-server setup):**
+
+Set the `HOOPS_WEBAPI_URL` environment variable to point to the server's address:
+
+```json
+{
+  "mcpServers": {
+    "hoops-ai": {
+      "command": "uv",
+      "args": [
+        "run",
+        "--directory",
+        "C:\\path\\to\\HOOPS_AI-MCP\\mcp_server",
+        "server.py"
+      ],
+      "env": {
+        "HOOPS_WEBAPI_URL": "http://192.168.0.6:8001"
+      }
+    }
+  }
+}
+```
+
+> Replace `192.168.0.6` with the actual IP address of the machine running the WebAPI server.
 
 4. Save the file and **restart Claude Desktop**.
 
