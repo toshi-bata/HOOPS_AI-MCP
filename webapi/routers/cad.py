@@ -6,6 +6,10 @@ from typing import Optional
 router = APIRouter(prefix="/CAD", tags=["CAD Viewer"])
 
 
+def _get_session_id(request: Request) -> str:
+    return request.headers.get("X-Session-ID", "default")
+
+
 @router.get("/viewer", response_class=HTMLResponse)
 def CAD_viewer_upload_page():
     CAD_shared_dir = core.get_CAD_shared_dir()
@@ -163,7 +167,7 @@ def CAD_viewer(
             _, cad_file_path, _ = core.upload_CAD_file_persistent(file)
         else:
             raise HTTPException(status_code=422, detail="Either 'file' or 'file_id' is required.")
-        return _resolve_urls(core.create_CAD_viewer(cad_file_path), str(request.base_url))
+        return _resolve_urls(core.create_CAD_viewer(cad_file_path, _get_session_id(request)), str(request.base_url))
     except HTTPException:
         raise
     except RuntimeError as exc:
@@ -173,9 +177,9 @@ def CAD_viewer(
 
 
 @router.delete("/viewer")
-def CAD_viewer_terminate(all: bool = False):
+def CAD_viewer_terminate(request: Request, all: bool = False):
     try:
-        return core.terminate_CAD_viewer(terminate_all=all)
+        return core.terminate_CAD_viewer(session_id=_get_session_id(request), terminate_all=all)
     except RuntimeError as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
     except Exception as exc:
@@ -185,7 +189,7 @@ def CAD_viewer_terminate(all: bool = False):
 @router.post("/viewer/from-path")
 def CAD_viewer_from_path(request: Request, cad_file_path: str = Form(...)):
     try:
-        return _resolve_urls(core.create_CAD_viewer(core.get_shared_CAD_file(cad_file_path)), str(request.base_url))
+        return _resolve_urls(core.create_CAD_viewer(core.get_shared_CAD_file(cad_file_path), _get_session_id(request)), str(request.base_url))
     except RuntimeError as exc:
         raise HTTPException(status_code=500, detail=str(exc)) from exc
     except Exception as exc:
