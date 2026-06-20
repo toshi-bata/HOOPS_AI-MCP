@@ -57,7 +57,7 @@ See **[webapi/README.md](webapi/README.md)** for full instructions.
 cd webapi
 pip install -r requirements.txt
 copy .env.example .env   # then edit .env with your HOOPS AI license key
-<Path\to\HOOPS_AI\install\dir>\.venv\Scripts\python.exe -m uvicorn main:app --host 0.0.0.0 --port 8000
+<Path\to\HOOPS_AI\install\dir>\.venv\Scripts\python.exe main.py --host 0.0.0.0 --port 8000
 ```
 
 **Linux:**
@@ -65,7 +65,7 @@ copy .env.example .env   # then edit .env with your HOOPS AI license key
 cd webapi
 pip install -r requirements.txt
 cp .env.example .env     # then edit .env with your HOOPS AI license key
-/path/to/HOOPS_AI/install/dir/.venv/bin/python -m uvicorn main:app --host 0.0.0.0 --port 8000
+/path/to/HOOPS_AI/install/dir/.venv/bin/python main.py --host 0.0.0.0 --port 8000
 ```
 
 ### 3. Set up the MCP server (Claude Desktop)

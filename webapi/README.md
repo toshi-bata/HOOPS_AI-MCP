@@ -91,20 +91,20 @@ Run from the `webapi/` directory using the Python executable from your HOOPS AI 
 
 ```bat
 cd webapi
-<Path\to\HOOPS_AI\install\dir>\.venv\Scripts\python.exe -m uvicorn main:app --host 0.0.0.0 --port 8000
+<Path\to\HOOPS_AI\install\dir>\.venv\Scripts\python.exe main.py --host 0.0.0.0 --port 8000
 ```
 
 **Linux:**
 
 ```bash
 cd webapi
-/path/to/HOOPS_AI/install/dir/.venv/bin/python -m uvicorn main:app --host 0.0.0.0 --port 8000
+/path/to/HOOPS_AI/install/dir/.venv/bin/python main.py --host 0.0.0.0 --port 8000
 ```
 
 > Replace the path prefix with the actual directory where HOOPS AI is installed.
 > The venv Python executable ensures HOOPS AI packages from that environment are used.
 
-> **Note:** Port `8000` is the default. If it is already in use on your machine, change `--port 8000` to any available port (e.g. `--port 8001`) and update `HOOPS_WEBAPI_URL` in the MCP server config accordingly.
+> **Note:** Port `8000` is the default. If port 8000 is already in use, the server will print an error and exit — simply retry with a different port (e.g. `--port 8001`) and update `HOOPS_WEBAPI_URL` in the MCP server config accordingly.
 
 > **Note (Windows):** To allow connections from other machines on the LAN, add a Windows Firewall inbound rule for port 8000 (TCP).
 
@@ -114,14 +114,14 @@ For development with auto-reload:
 
 ```bat
 cd webapi
-<Path\to\HOOPS_AI\install\dir>\.venv\Scripts\python.exe -m uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+<Path\to\HOOPS_AI\install\dir>\.venv\Scripts\python.exe main.py --host 0.0.0.0 --port 8000 --reload
 ```
 
 **Linux:**
 
 ```bash
 cd webapi
-/path/to/HOOPS_AI/install/dir/.venv/bin/python -m uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+/path/to/HOOPS_AI/install/dir/.venv/bin/python main.py --host 0.0.0.0 --port 8000 --reload
 ```
 
 - API base URL: `http://<server-ip>:8000`
