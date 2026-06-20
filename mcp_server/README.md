@@ -40,6 +40,11 @@ See the root [README](../README.md) for an overview of the full platform.
 
 > Replace `C:\\path\\to\\HOOPS_AI-MCP` with the actual path where you cloned this repository.
 
+**Same machine (default):**
+
+No additional configuration is needed.  
+The MCP server defaults to `http://127.0.0.1:8001`, so if the WebAPI server is running on the same machine, the basic config above works as-is.
+
 **When the WebAPI server is on a different machine (client-server setup):**
 
 Add `"env": {"HOOPS_WEBAPI_URL": "..."}` to the config — no system environment variable is needed.  

@@ -122,8 +122,13 @@ cd webapi
 /path/to/HOOPS_AI/install/dir/.venv/bin/python -m uvicorn main:app --host 0.0.0.0 --port 8001 --reload
 ```
 
-- API base URL: `http://<server-ip>:8001` (e.g. `http://192.168.0.6:8001`)
+- API base URL: `http://<server-ip>:8001`
 - Interactive docs (Swagger UI): `http://<server-ip>:8001/docs`
+
+> **`<server-ip>` substitution:**  
+> - **Same machine** — use `127.0.0.1` (e.g. `http://127.0.0.1:8001`). No IP lookup needed.  
+> - **Different machine** — use the LAN IP of the server machine (e.g. `http://192.168.0.6:8001`).  
+>   On Windows, run `ipconfig` on the server to find its IP address.
 
 ---
 
@@ -154,7 +159,7 @@ curl -X POST "http://<server-ip>:8001/CAD/viewer" \
 **Response:**
 
 ```json
-{ "viewer_url": "http://127.0.0.1:<viewer_port>/index.html", "image_url": "http://<server-ip>:8001/out/<stem>.png" }
+{ "viewer_url": "http://<server-ip>:<viewer_port>/index.html", "image_url": "http://<server-ip>:8001/out/<stem>.png" }
 ```
 
 Open the returned `viewer_url` in your browser to view the model. `image_url` is a PNG preview of the model.
@@ -376,7 +381,7 @@ curl -X POST "http://<server-ip>:8001/MFR/inference" \
 {
   "predictions": [...],
   "probabilities": [...],
-  "viewer_url": "http://127.0.0.1:<viewer_port>/index.html",
+  "viewer_url": "http://<server-ip>:<viewer_port>/index.html",
   "image_url": "http://<server-ip>:8001/out/<stem>.png"
 }
 ```
