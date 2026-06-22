@@ -30,8 +30,8 @@ See the root [README](../README.md) for an overview of the full platform.
       "args": [
         "run",
         "--directory",
-        "C:\\path\\to\\HOOPS_AI-MCP\\mcp_server",
-        "server.py"
+        "C:\\path\\to\\HOOPS_AI-MCP",
+        "mcp_server/server.py"
       ]
     }
   }
