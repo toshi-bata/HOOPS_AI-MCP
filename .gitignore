@@ -1,8 +1,8 @@
 __pycache__/
-*.pyc
-*.pyo
+*.py[cod]
 .env
-webapi/uploads/
-webapi/out/
+uploads/
+out/
 .venv/
 demo/
+static/hoops-web-viewer-monolith.mjs
