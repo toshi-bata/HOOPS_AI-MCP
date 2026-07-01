@@ -45,13 +45,11 @@ Then install the WebAPI dependencies into the **HOOPS AI virtual environment**:
 
 **Windows:**
 ```bat
-cd webapi
 <Path\to\HOOPS_AI\install\dir>\.venv\Scripts\pip.exe install -r requirements.txt
 ```
 
 **Linux:**
 ```bash
-cd webapi
 /path/to/HOOPS_AI/install/dir/.venv/bin/pip install -r requirements.txt
 ```
 
@@ -132,14 +130,12 @@ Run from the `` directory using the Python executable from your HOOPS AI virtual
 **Windows:**
 
 ```bat
-cd webapi
 <Path\to\HOOPS_AI\install\dir>\.venv\Scripts\python.exe main.py --host 0.0.0.0 --port 8000
 ```
 
 **Linux:**
 
 ```bash
-cd webapi
 /path/to/HOOPS_AI/install/dir/.venv/bin/python main.py --host 0.0.0.0 --port 8000
 ```
 
@@ -217,14 +213,12 @@ For development with auto-reload:
 **Windows:**
 
 ```bat
-cd webapi
 <Path\to\HOOPS_AI\install\dir>\.venv\Scripts\python.exe main.py --host 0.0.0.0 --port 8000 --reload
 ```
 
 **Linux:**
 
 ```bash
-cd webapi
 /path/to/HOOPS_AI/install/dir/.venv/bin/python main.py --host 0.0.0.0 --port 8000 --reload
 ```
 
@@ -616,6 +610,5 @@ curl "http://<server-ip>:8000/similarity/part-image?filename=part_042.stp" -o pa
 ## Running tests
 
 ```bash
-cd webapi
 python -m unittest discover -s tests
 ```
