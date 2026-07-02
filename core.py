@@ -725,14 +725,14 @@ def get_brep_attributes(cad_file_path: pathlib.Path) -> dict[str, Any]:
 # ---------------------------------------------------------------------------
 
 def get_part_class_labels_description() -> dict[int, dict[str, str]]:
-    """Return the 45-class part label dict from the shared notebook module."""
+    """Return the 45-class part label dict from the shared labels module."""
     import importlib.util
 
-    labels_file = APP_ROOT / "notebooks" / "part_classification_labels.py"
+    labels_file = APP_ROOT / "part_classification_labels.py"
     if not labels_file.exists():
         raise RuntimeError(
             f"Part classification labels file not found: {labels_file}. "
-            "Expected notebooks/part_classification_labels.py to define 'labels_description'."
+            "Expected part_classification_labels.py at the repository root."
         )
     spec = importlib.util.spec_from_file_location("part_classification_labels", str(labels_file))
     mod = importlib.util.module_from_spec(spec)
