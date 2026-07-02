@@ -112,9 +112,9 @@ cp .env.example .env
 | `HOOPS_AI_MFR_MODEL_NAME` | optional | MFR trained model checkpoint filename (e.g. `ts3d_162k_mfr.ckpt`) |
 | `HOOPS_AI_EMBEDDINGS_MODEL_NAME` | optional | Embeddings trained model checkpoint filename (e.g. `ts3d_1M_hoops_embeddings.ckpt`) |
 | `HOOPS_AI_FAISS_INDEX_PATH` | optional | FAISS index file for shape similarity search (e.g. `fabwave_embeddings_store.faiss`) |
-| `HOOPS_AI_PART_CLASS_CHECKPOINT_PATH` | optional | Path to the trained GraphClassification checkpoint (`.ckpt`) for Part Classification |
+| `HOOPS_AI_PART_CLASS_MODEL_NAME` | optional | Filename of the trained GraphClassification checkpoint under `packages/trained_ml_models/` (e.g. `ts3d_graphclassification_5k_10epochs.ckpt`) |
 | `HOOPS_AI_PART_CLASS_FLOW_NAME` | optional | Part Classification flow name (required for `/part-classification/dataset/*` endpoints) |
-| `HOOPS_AI_PART_CLASS_FLOW_ROOT` | optional | Override flow root directory (default: `<HOOPS_AI_NOTEBOOK_DIR>/../packages/flows/<flow_name>`) |
+| `HOOPS_AI_PART_CLASS_FLOW_ROOT` | optional | Override flow root directory relative to `HOOPS_AI_NOTEBOOK_DIR` (default: `../packages/flows/<flow_name>`; set to `out/flows/<flow_name>` when using notebook-generated stream_cache) |
 | `HOOPS_AI_PART_CLASS_LABEL_KEY` | optional | Label array key for dataset queries (default: `part_label`; use `task_A` for custom ETL) |
 
 > **Note:** `HOOPS_AI_LICENSE` is read **only** from the `.env` file, not from system environment variables.
@@ -128,6 +128,9 @@ HOOPS_AI_MFR_FLOW_NAME=ETL_CADSYNTH_training_b2
 HOOPS_AI_MFR_MODEL_NAME=ts3d_162k_mfr.ckpt
 HOOPS_AI_EMBEDDINGS_MODEL_NAME=ts3d_1M_hoops_embeddings.ckpt
 HOOPS_AI_FAISS_INDEX_PATH=fabwave_embeddings_store.faiss
+HOOPS_AI_PART_CLASS_MODEL_NAME=ts3d_graphclassification_5k_10epochs.ckpt
+HOOPS_AI_PART_CLASS_FLOW_NAME=ETL_Fabwave_training_b2
+HOOPS_AI_PART_CLASS_FLOW_ROOT=out/flows/ETL_Fabwave_training_b2
 ```
 
 ### 4. Start the server
@@ -618,7 +621,16 @@ curl "http://<server-ip>:8000/similarity/part-image?filename=part_042.stp" -o pa
 
 Classify a CAD solid into one of 45 part categories (FabWave dataset) using a trained Graph Classification model.
 
-**Prerequisites:** Run `3c_workflow_for_Part_classification_fabwave.ipynb` to build the dataset, then `4c_train_a_ml_model_to_classify_parts.ipynb` to train the model. Set `HOOPS_AI_PART_CLASS_CHECKPOINT_PATH` (and `HOOPS_AI_PART_CLASS_FLOW_NAME` for dataset endpoints) in `.env`.
+**Prerequisites:**
+
+1. Download data packages from Tech Soft 3D File Transfer (URL / password above), or run the notebooks:
+   - `3c_workflow_for_Part_classification_fabwave.ipynb` – builds the dataset and generates `stream_cache/` PNG thumbnails
+   - `4c_train_a_ml_model_to_classify_parts.ipynb` – trains the classification model
+2. Set the following in `.env`:
+   - `HOOPS_AI_PART_CLASS_MODEL_NAME` – checkpoint filename under `packages/trained_ml_models/`
+   - `HOOPS_AI_PART_CLASS_FLOW_NAME` – ETL flow name (for dataset endpoints)
+   - `HOOPS_AI_PART_CLASS_FLOW_ROOT` – relative path (from `HOOPS_AI_NOTEBOOK_DIR`) to the flow root that contains `stream_cache/`
+     (e.g. `out/flows/ETL_Fabwave_training_b2` when using notebook-generated output)
 
 #### Run inference
 
@@ -721,9 +733,9 @@ GET /part-classification/dataset/files?label_id=<0-44>
 
 **Linux:** `curl "http://<server-ip>:8000/part-classification/dataset/files?label_id=30"`
 
-#### Dataset thumbnail preview (PNG)
+#### Dataset thumbnail preview
 
-Returns a PNG grid of dataset thumbnails for a given class.
+Returns the URL of a PNG grid of dataset thumbnails for a given class (same pattern as `/similarity/search`).
 
 ```
 GET /part-classification/dataset/preview?label_id=<0-44>&k=25&grid_cols=8
@@ -731,18 +743,24 @@ GET /part-classification/dataset/preview?label_id=<0-44>&k=25&grid_cols=8
 
 **Windows (PowerShell):**
 ```powershell
-Invoke-RestMethod -Uri "http://<server-ip>:8000/part-classification/dataset/preview?label_id=30&k=25" -OutFile "preview.png"
+curl.exe "http://<server-ip>:8000/part-classification/dataset/preview?label_id=30&k=25"
 ```
 
 **Linux:**
 ```bash
-curl "http://<server-ip>:8000/part-classification/dataset/preview?label_id=30&k=25" -o preview.png
+curl "http://<server-ip>:8000/part-classification/dataset/preview?label_id=30&k=25"
 ```
 
-**Response:** PNG image (`image/png`)
+**Response:**
+
+```json
+{
+  "label_id": 30,
+  "part_name": "Gears",
+  "image_url": "http://<server-ip>:8000/out/<uuid>.png"
+}
+```
+
+Open `image_url` in a browser to view the thumbnail grid.
 
 > **Note:** Thumbnails are rendered from the `stream_cache/` folder inside the flow directory. This folder is populated when running the ETL step of `3c_workflow_for_Part_classification_fabwave.ipynb`. If `stream_cache/` is empty, the image grid will show "No Preview" placeholders.
-
-```bash
-python -m unittest discover -s tests
-```
