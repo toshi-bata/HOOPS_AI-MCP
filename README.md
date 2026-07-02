@@ -29,9 +29,8 @@ A FastAPI-based REST API that exposes [HOOPS AI](https://www.techsoft3d.com/deve
   |---|---|---|
   | MFR endpoints | `3b_workflow_for_MFR_cadsynth.ipynb` | `notebooks/out/flows/<flow_name>/`<br>`.dataset` / `.infoset` / `.attribset` |
   | `/similarity/search` | `5b_cad_search_using_HOOPS_embeddings.ipynb`<br>(up to **Saving an Index**) | `fabwave_embeddings_store.faiss` |
-  | `/part-classification/predict` | `4c_train_a_ml_model_to_classify_parts.ipynb`<br>(or use pre-packaged `.ckpt`) | trained `.ckpt` checkpoint |
-  | `/part-classification/dataset/*` | `3c_workflow_for_Part_classification_fabwave.ipynb` | flow `.dataset` / `.infoset` / `.attribset` |
-  | `/part-classification/dataset/preview` | same as above — generates `stream_cache/` PNG thumbnails | `stream_cache/*.png` |
+  | `/part-classification/predict` | — (`.ckpt` is included in `packages/trained_ml_models/`) | — |
+  | `/part-classification/dataset/*` | `3c_workflow_for_Part_classification_fabwave.ipynb` | flow `.dataset` / `.infoset` / `.attribset`<br>`stream_cache/*.png` |
 
   > **Tip:** Pre-generated dataset files are also available for download from the Tech Soft 3D File Transfer service — no need to run the notebooks yourself:  
   > URL: https://transfer.techsoft3d.com/link/fIPcX3oc3UQXl7eEaB387F  
