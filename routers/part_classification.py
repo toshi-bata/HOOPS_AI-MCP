@@ -5,7 +5,7 @@ import core
 from fastapi import APIRouter, File, HTTPException, Query, UploadFile
 from fastapi.responses import StreamingResponse
 
-router = APIRouter(prefix="/api/part-classification", tags=["Part Classification"])
+router = APIRouter(prefix="/part-classification", tags=["Part Classification"])
 
 
 @router.post("/predict")
