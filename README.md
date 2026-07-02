@@ -29,9 +29,9 @@ A FastAPI-based REST API that exposes [HOOPS AI](https://www.techsoft3d.com/deve
   |---|---|---|
   | MFR endpoints | `3b_workflow_for_MFR_cadsynth.ipynb` | `notebooks/out/flows/<flow_name>/`<br>`.dataset` / `.infoset` / `.attribset` |
   | `/similarity/search` | `5b_cad_search_using_HOOPS_embeddings.ipynb`<br>(up to **Saving an Index**) | `fabwave_embeddings_store.faiss` |
-  | `/part-classification/predict` | `4c_train_a_ml_model_to_classify_parts.ipynb` | trained `.ckpt` checkpoint |
-  | `/part-classification/dataset/*` | `3c_workflow_for_Part_classification_fabwave.ipynb`<br>(ETL step, to generate `stream_cache/`) | flow `.dataset` / `.infoset` / `.attribset` |
-  | `/part-classification/dataset/preview` | same as above — `stream_cache/` must contain PNG thumbnails | `stream_cache/*.png` |
+  | `/part-classification/predict` | `4c_train_a_ml_model_to_classify_parts.ipynb`<br>(or use pre-packaged `.ckpt`) | trained `.ckpt` checkpoint |
+  | `/part-classification/dataset/*` | `3c_workflow_for_Part_classification_fabwave.ipynb` | flow `.dataset` / `.infoset` / `.attribset` |
+  | `/part-classification/dataset/preview` | same as above — generates `stream_cache/` PNG thumbnails | `stream_cache/*.png` |
 
   > **Tip:** Pre-generated dataset files are also available for download from the Tech Soft 3D File Transfer service — no need to run the notebooks yourself:  
   > URL: https://transfer.techsoft3d.com/link/fIPcX3oc3UQXl7eEaB387F  
@@ -618,17 +618,6 @@ curl "http://<server-ip>:8000/similarity/part-image?filename=part_042.stp" -o pa
 ### Part Classification
 
 Classify a CAD solid into one of 45 part categories (FabWave dataset) using a trained Graph Classification model.
-
-**Prerequisites:**
-
-1. Download data packages from Tech Soft 3D File Transfer (URL / password above), or run the notebooks:
-   - `3c_workflow_for_Part_classification_fabwave.ipynb` – builds the dataset and generates `stream_cache/` PNG thumbnails
-   - `4c_train_a_ml_model_to_classify_parts.ipynb` – trains the classification model
-2. Set the following in `.env`:
-   - `HOOPS_AI_PART_CLASS_MODEL_NAME` – checkpoint filename under `packages/trained_ml_models/`
-   - `HOOPS_AI_PART_CLASS_FLOW_NAME` – ETL flow name (for dataset endpoints)
-   - `HOOPS_AI_PART_CLASS_FLOW_ROOT` – relative path (from `HOOPS_AI_NOTEBOOK_DIR`) to the flow root that contains `stream_cache/`
-     (e.g. `out/flows/ETL_Fabwave_training_b2` when using notebook-generated output)
 
 #### Run inference
 
