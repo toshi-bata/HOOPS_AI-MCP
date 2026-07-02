@@ -744,14 +744,17 @@ def _get_part_class_flow_root_dir() -> pathlib.Path:
     """Resolve the flow root directory for the part classification dataset.
 
     Priority:
-    1. HOOPS_AI_PART_CLASS_FLOW_ROOT (absolute override)
+    1. HOOPS_AI_PART_CLASS_FLOW_ROOT (absolute, or relative to HOOPS_AI_NOTEBOOK_DIR)
     2. <HOOPS_AI_NOTEBOOK_DIR>/../packages/flows/<HOOPS_AI_PART_CLASS_FLOW_NAME>
        (matches 4c notebook convention)
     """
+    notebooks_dir = pathlib.Path(get_required_env("HOOPS_AI_NOTEBOOK_DIR"))
     override = os.environ.get("HOOPS_AI_PART_CLASS_FLOW_ROOT")
     if override:
-        return pathlib.Path(override).expanduser().resolve()
-    notebooks_dir = pathlib.Path(get_required_env("HOOPS_AI_NOTEBOOK_DIR"))
+        path = pathlib.Path(override).expanduser()
+        if not path.is_absolute():
+            path = notebooks_dir / path
+        return path.resolve()
     flow_name = get_required_env("HOOPS_AI_PART_CLASS_FLOW_NAME")
     return (notebooks_dir.parent / "packages" / "flows" / flow_name).resolve()
 
