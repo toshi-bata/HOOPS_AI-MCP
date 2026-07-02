@@ -29,7 +29,9 @@ A FastAPI-based REST API that exposes [HOOPS AI](https://www.techsoft3d.com/deve
   |---|---|---|
   | MFR endpoints | `3b_workflow_for_MFR_cadsynth.ipynb` | `notebooks/out/flows/<flow_name>/`<br>`.dataset` / `.infoset` / `.attribset` |
   | `/similarity/search` | `5b_cad_search_using_HOOPS_embeddings.ipynb`<br>(up to **Saving an Index**) | `fabwave_embeddings_store.faiss` |
-  | `/part-classification/*` | `3c_workflow_for_Part_classification_fabwave.ipynb`<br>then `4c_train_a_ml_model_to_classify_parts.ipynb` | flow dataset files + trained `.ckpt` checkpoint |
+  | `/part-classification/predict` | `4c_train_a_ml_model_to_classify_parts.ipynb` | trained `.ckpt` checkpoint |
+  | `/part-classification/dataset/*` | `3c_workflow_for_Part_classification_fabwave.ipynb`<br>(ETL step, to generate `stream_cache/`) | flow `.dataset` / `.infoset` / `.attribset` |
+  | `/part-classification/dataset/preview` | same as above — `stream_cache/` must contain PNG thumbnails | `stream_cache/*.png` |
 
   > **Tip:** Pre-generated dataset files are also available for download from the Tech Soft 3D File Transfer service — no need to run the notebooks yourself:  
   > URL: https://transfer.techsoft3d.com/link/fIPcX3oc3UQXl7eEaB387F  
@@ -739,9 +741,7 @@ curl "http://<server-ip>:8000/part-classification/dataset/preview?label_id=30&k=
 
 **Response:** PNG image (`image/png`)
 
----
-
-## Running tests
+> **Note:** Thumbnails are rendered from the `stream_cache/` folder inside the flow directory. This folder is populated when running the ETL step of `3c_workflow_for_Part_classification_fabwave.ipynb`. If `stream_cache/` is empty, the image grid will show "No Preview" placeholders.
 
 ```bash
 python -m unittest discover -s tests
