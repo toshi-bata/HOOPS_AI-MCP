@@ -743,19 +743,15 @@ def get_part_class_labels_description() -> dict[int, dict[str, str]]:
 def _get_part_class_flow_root_dir() -> pathlib.Path:
     """Resolve the flow root directory for the part classification dataset.
 
-    Priority:
-    1. HOOPS_AI_PART_CLASS_FLOW_ROOT (absolute, or relative to HOOPS_AI_NOTEBOOK_DIR)
-    2. <HOOPS_AI_NOTEBOOK_DIR>/../packages/flows/<HOOPS_AI_PART_CLASS_FLOW_NAME>
-       (matches 4c notebook convention)
+    Priority (same convention as MFR):
+    1. <HOOPS_AI_NOTEBOOK_DIR>/out/flows/<FLOW_NAME>  — notebook-generated output (has stream_cache)
+    2. <HOOPS_AI_NOTEBOOK_DIR>/../packages/flows/<FLOW_NAME>  — pre-packaged dataset
     """
     notebooks_dir = pathlib.Path(get_required_env("HOOPS_AI_NOTEBOOK_DIR"))
-    override = os.environ.get("HOOPS_AI_PART_CLASS_FLOW_ROOT")
-    if override:
-        path = pathlib.Path(override).expanduser()
-        if not path.is_absolute():
-            path = notebooks_dir / path
-        return path.resolve()
     flow_name = get_required_env("HOOPS_AI_PART_CLASS_FLOW_NAME")
+    notebook_out = notebooks_dir / "out" / "flows" / flow_name
+    if notebook_out.exists():
+        return notebook_out.resolve()
     return (notebooks_dir.parent / "packages" / "flows" / flow_name).resolve()
 
 

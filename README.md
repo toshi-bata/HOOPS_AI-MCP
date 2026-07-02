@@ -113,8 +113,7 @@ cp .env.example .env
 | `HOOPS_AI_EMBEDDINGS_MODEL_NAME` | optional | Embeddings trained model checkpoint filename (e.g. `ts3d_1M_hoops_embeddings.ckpt`) |
 | `HOOPS_AI_FAISS_INDEX_PATH` | optional | FAISS index file for shape similarity search (e.g. `fabwave_embeddings_store.faiss`) |
 | `HOOPS_AI_PART_CLASS_MODEL_NAME` | optional | Filename of the trained GraphClassification checkpoint under `packages/trained_ml_models/` (e.g. `ts3d_graphclassification_5k_10epochs.ckpt`) |
-| `HOOPS_AI_PART_CLASS_FLOW_NAME` | optional | Part Classification flow name (required for `/part-classification/dataset/*` endpoints) |
-| `HOOPS_AI_PART_CLASS_FLOW_ROOT` | optional | Override flow root directory relative to `HOOPS_AI_NOTEBOOK_DIR` (default: `../packages/flows/<flow_name>`; set to `out/flows/<flow_name>` when using notebook-generated stream_cache) |
+| `HOOPS_AI_PART_CLASS_FLOW_NAME` | optional | Part Classification flow name (required for `/part-classification/dataset/*` endpoints). The server automatically prefers `<HOOPS_AI_NOTEBOOK_DIR>/out/flows/<name>` (notebook output, includes thumbnails) and falls back to `../packages/flows/<name>` (pre-packaged). |
 | `HOOPS_AI_PART_CLASS_LABEL_KEY` | optional | Label array key for dataset queries (default: `part_label`; use `task_A` for custom ETL) |
 
 > **Note:** `HOOPS_AI_LICENSE` is read **only** from the `.env` file, not from system environment variables.
@@ -130,7 +129,6 @@ HOOPS_AI_EMBEDDINGS_MODEL_NAME=ts3d_1M_hoops_embeddings.ckpt
 HOOPS_AI_FAISS_INDEX_PATH=fabwave_embeddings_store.faiss
 HOOPS_AI_PART_CLASS_MODEL_NAME=ts3d_graphclassification_5k_10epochs.ckpt
 HOOPS_AI_PART_CLASS_FLOW_NAME=ETL_Fabwave_training_b2
-HOOPS_AI_PART_CLASS_FLOW_ROOT=out/flows/ETL_Fabwave_training_b2
 ```
 
 ### 4. Start the server
