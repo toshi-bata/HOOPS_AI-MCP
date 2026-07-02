@@ -745,8 +745,8 @@ def _get_part_class_flow_root_dir() -> pathlib.Path:
 
     Priority:
     1. HOOPS_AI_PART_CLASS_FLOW_ROOT (absolute, or relative to HOOPS_AI_NOTEBOOK_DIR)
-    2. <HOOPS_AI_NOTEBOOK_DIR>/../packages/flows/<HOOPS_AI_PART_CLASS_FLOW_NAME>
-       (matches 4c notebook convention)
+    2. <HOOPS_AI_NOTEBOOK_DIR>/../packages/trained_ml_models  (default; matches the
+       pre-packaged dataset layout shipped by Tech Soft 3D)
     """
     notebooks_dir = pathlib.Path(get_required_env("HOOPS_AI_NOTEBOOK_DIR"))
     override = os.environ.get("HOOPS_AI_PART_CLASS_FLOW_ROOT")
@@ -755,8 +755,7 @@ def _get_part_class_flow_root_dir() -> pathlib.Path:
         if not path.is_absolute():
             path = notebooks_dir / path
         return path.resolve()
-    flow_name = get_required_env("HOOPS_AI_PART_CLASS_FLOW_NAME")
-    return (notebooks_dir.parent / "packages" / "flows" / flow_name).resolve()
+    return (notebooks_dir.parent / "packages" / "trained_ml_models").resolve()
 
 
 def create_part_class_inference_model():
@@ -767,10 +766,8 @@ def create_part_class_inference_model():
     load_env_file()
 
     notebooks_dir = pathlib.Path(get_required_env("HOOPS_AI_NOTEBOOK_DIR"))
-    ckpt_raw = get_required_env("HOOPS_AI_PART_CLASS_CHECKPOINT_PATH")
-    ckpt_path = pathlib.Path(ckpt_raw)
-    if not ckpt_path.is_absolute():
-        ckpt_path = (notebooks_dir / ckpt_path).resolve()
+    model_name = get_required_env("HOOPS_AI_PART_CLASS_MODEL_NAME")
+    ckpt_path = notebooks_dir.parent / "packages" / "trained_ml_models" / model_name
 
     output_dir = notebooks_dir / "out"
     output_dir.mkdir(parents=True, exist_ok=True)
