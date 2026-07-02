@@ -2,8 +2,7 @@ import io
 from typing import Optional
 
 import core
-from fastapi import APIRouter, File, HTTPException, Query, UploadFile
-from fastapi.responses import StreamingResponse
+from fastapi import APIRouter, File, HTTPException, Query, Request, UploadFile
 
 router = APIRouter(prefix="/part-classification", tags=["Part Classification"])
 
@@ -76,11 +75,12 @@ def part_class_file_list(
 
 @router.get("/dataset/preview")
 def part_class_preview_image(
+    request: Request,
     label_id: int = Query(..., ge=0, le=44, description="Part label ID (0–44)."),
     k: int = Query(25, ge=1, description="Max number of thumbnails to show."),
     grid_cols: int = Query(8, ge=1, description="Number of columns in the thumbnail grid."),
 ):
-    """Return a PNG image grid of dataset thumbnails for the given part class."""
+    """Return a URL to a PNG thumbnail grid for the given part class."""
     try:
         file_list_result = core.get_part_class_file_list(label_id)
         file_ids = file_list_result["file_ids"]
@@ -90,8 +90,13 @@ def part_class_preview_image(
                 detail=f"No dataset files found for label_id={label_id} "
                 f"({file_list_result.get('part_name', '')}).",
             )
-        png_bytes = core.get_part_class_preview_image(file_ids, k=k, grid_cols=grid_cols)
-        return StreamingResponse(io.BytesIO(png_bytes), media_type="image/png")
+        image_filename = core.get_part_class_preview_image(file_ids, k=k, grid_cols=grid_cols)
+        image_url = str(request.url_for("out", path=image_filename))
+        return {
+            "label_id": label_id,
+            "part_name": file_list_result["part_name"],
+            "image_url": image_url,
+        }
     except HTTPException:
         raise
     except Exception as exc:

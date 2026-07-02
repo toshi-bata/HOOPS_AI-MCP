@@ -917,7 +917,8 @@ def get_part_class_file_list(label_id: int) -> dict[str, Any]:
     }
 
 
-def get_part_class_preview_image(file_ids: list, k: int = 25, grid_cols: int = 8) -> bytes:
+def get_part_class_preview_image(file_ids: list, k: int = 25, grid_cols: int = 8) -> str:
+    """Render a thumbnail grid for the given file IDs. Saves to /out/ and returns the filename."""
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
@@ -934,9 +935,10 @@ def get_part_class_preview_image(file_ids: list, k: int = 25, grid_cols: int = 8
         figsize=(15, 5),
     )
 
-    buf = io.BytesIO()
-    fig.savefig(buf, format="png", bbox_inches="tight")
+    image_filename = f"{uuid.uuid4()}.png"
+    image_path = CAD_VIEWER_OUTPUT_DIR / image_filename
+    CAD_VIEWER_OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+    fig.savefig(str(image_path), format="png", bbox_inches="tight")
     plt.close(fig)
-    buf.seek(0)
-    return buf.read()
+    return image_filename
 
